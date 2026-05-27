@@ -4,6 +4,11 @@ category: utilities
 name: Pubky Homeserver
 version: "0.1.0"
 tagline: Decentralized homeserver with admin dashboard
+icon: https://raw.githubusercontent.com/pubky/umbrel-apps-gallery/master/pubky-homeserver/icon.svg
+gallery:
+  - https://raw.githubusercontent.com/pubky/umbrel-apps-gallery/master/pubky-homeserver/1.jpg
+  - https://raw.githubusercontent.com/pubky/umbrel-apps-gallery/master/pubky-homeserver/2.jpg
+  - https://raw.githubusercontent.com/pubky/umbrel-apps-gallery/master/pubky-homeserver/3.jpg
 description: |
   Pubky unlocks the web by realizing a vision for a key-based, self-regulating web that puts users in control.
 
@@ -42,7 +47,6 @@ dependencies: []
 repo: https://github.com/pubky/pubky-core/
 support: https://github.com/pubky/pubky-core/issues
 port: 8812
-gallery: []
 path: ""
 defaultUsername: ""
 defaultPassword: ""

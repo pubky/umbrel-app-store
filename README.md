@@ -26,6 +26,7 @@ Once the app graduates from beta, it will also be available directly from the of
 - [`pubky/pubky-core`](https://github.com/pubky/pubky-core) — the Rust homeserver this app runs.
 - [`pubky/homeserver-dashboard`](https://github.com/pubky/homeserver-dashboard) — the Next.js admin dashboard the app ships with.
 - [`pubky/umbrel-apps`](https://github.com/pubky/umbrel-apps) — our fork of the official Umbrel app store used to open the eventual upstream PR.
+- [`pubky/umbrel-apps-gallery`](https://github.com/pubky/umbrel-apps-gallery) — fork of the official gallery repo. Hosts `pubky-homeserver/icon.svg` + screenshots; this store's `umbrel-app.yml` points at those raw URLs.
 
 ## Reporting issues
 
