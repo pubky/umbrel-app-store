@@ -1,0 +1,124 @@
+version: "3.7"
+
+services:
+  app_proxy:
+    environment:
+      APP_HOST: pubky-homeserver_web_1
+      APP_PORT: 8812
+
+  postgres:
+    image: postgres:17-alpine@sha256:ff4ccc02b97e0ebb6b328ef9ff92522f95586f83be6801896b615088defc8ad2
+    restart: on-failure
+    stop_grace_period: 1m
+    environment:
+      POSTGRES_USER: pubky
+      POSTGRES_PASSWORD: ${APP_PASSWORD}
+      POSTGRES_DB: pubky_homeserver
+    volumes:
+      - ${APP_DATA_DIR}/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pubky -d pubky_homeserver"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  homeserver:
+    image: smz9hykx/pubky-homeserver:latest@sha256:93e739fa9b85b7aa860c04e68d68b7be26c2a6866849c7a0e3e3ff86ca38e328
+    restart: on-failure
+    stop_grace_period: 1m
+    # Tee stdout+stderr of the homeserver into /data/homeserver.log while
+    # keeping `docker logs` working. A FIFO + background `tee` lets the
+    # original entrypoint.sh remain PID 1 via `exec`, so SIGTERM still
+    # reaches the homeserver binary cleanly. The shared /data volume is also
+    # bind-mounted into the web (dashboard) container so it can read the
+    # file to render the Logs tab.
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        rm -f /tmp/log-fifo
+        mkfifo /tmp/log-fifo
+        tee -a /data/homeserver.log < /tmp/log-fifo &
+        exec /usr/local/bin/entrypoint.sh > /tmp/log-fifo 2>&1
+    volumes:
+      - ${APP_DATA_DIR}/homeserver:/data
+      - ${APP_DATA_DIR}/cloudflare:/etc/pubky-cloudflare:ro
+    environment:
+      DATA_DIR: /data
+      POSTGRES_PASSWORD: ${APP_PASSWORD}
+      ADMIN_PASSWORD: ${APP_PASSWORD}
+      CLOUDFLARE_DOMAIN: ${CLOUDFLARE_DOMAIN:-}
+    ports:
+      - "6286:6286"
+      - "6287:6287"
+      - "6288:6288"
+      - "6289:6289"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z localhost 6288 || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 120s
+
+  web:
+    image: smz9hykx/homeserver-dashboard:latest@sha256:a918a962638e3a8d91f410a3ab6af7bc6f1834caa8f1af58fd8f11c82eb7af71
+    restart: on-failure
+    stop_grace_period: 1m
+    volumes:
+      - ${APP_DATA_DIR}/cloudflare:/app/cloudflare-config
+      - ${APP_DATA_DIR}/homeserver:/app/homeserver-data:ro
+    environment:
+      # Server-only env vars (read by API routes, never exposed to client)
+      ADMIN_BASE_URL: http://homeserver:6288
+      ADMIN_TOKEN: ${APP_PASSWORD}
+      PORT: 8812
+      HOSTNAME: "0.0.0.0"
+    depends_on:
+      homeserver:
+        condition: service_started
+    # No ports exposed - uses app_proxy instead
+
+  # Optional. Set token and domain via dashboard UI or .env; route hostname to http://homeserver:6286 in Cloudflare.
+  # Uses alpine image with cloudflared downloaded at runtime to support reading token from file.
+  cloudflared:
+    image: alpine:3.20
+    restart: on-failure
+    stop_grace_period: 1m
+    volumes:
+      - ${APP_DATA_DIR}/cloudflare:/etc/cloudflared-config:ro
+    command:
+      - /bin/sh
+      - -c
+      - |
+        set -e
+        ARCH=$$(uname -m)
+        case "$$ARCH" in
+          x86_64) ARCH="amd64" ;;
+          aarch64) ARCH="arm64" ;;
+        esac
+        if ! command -v cloudflared >/dev/null 2>&1; then
+          echo "Downloading cloudflared for $$ARCH..."
+          wget -q -O /usr/local/bin/cloudflared "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-$$ARCH"
+          chmod +x /usr/local/bin/cloudflared
+        fi
+        TOKEN=""
+        if [ -f /etc/cloudflared-config/token ] && [ -s /etc/cloudflared-config/token ]; then
+          TOKEN="$$(cat /etc/cloudflared-config/token)"
+        elif [ -n "$$CLOUDFLARE_TUNNEL_TOKEN" ]; then
+          TOKEN="$$CLOUDFLARE_TUNNEL_TOKEN"
+        fi
+        if [ -n "$$TOKEN" ]; then
+          echo "Starting Cloudflare tunnel..."
+          exec /usr/local/bin/cloudflared tunnel --no-autoupdate run --token "$$TOKEN"
+        else
+          echo "No Cloudflare tunnel token found. Sleeping..."
+          sleep infinity
+        fi
+    environment:
+      CLOUDFLARE_TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN:-}
+    depends_on:
+      homeserver:
+        condition: service_started

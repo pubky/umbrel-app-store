@@ -1,0 +1,51 @@
+manifestVersion: 1
+id: pubky-homeserver
+category: utilities
+name: Pubky Homeserver
+version: "0.1.0"
+tagline: Decentralized homeserver with admin dashboard
+description: |
+  Pubky unlocks the web by realizing a vision for a key-based, self-regulating web that puts users in control.
+
+  **Pubky Homeserver** is a decentralized data storage system that acts as your agent on the Internet, combining practical decentralized routing & identity (PKARR) with simple interoperable hosting for censorship resistance and credible exit.
+
+  ## Features
+
+  - **Decentralized Storage Architecture**: Operate your own homeserver or use services from individuals, cooperatives, or commercial entities
+  - **RESTful API**: Any service can access data through a standard RESTful API
+  - **User Data Control**: Full control over your data with the ability to migrate between homeservers
+  - **Web-Based Admin Dashboard**: Manage users, files, and server configuration through an intuitive web interface
+  - **User Management**: Generate signup tokens, enable/disable users, and monitor server activity
+  - **WebDAV File Browser**: Full file management with list/read/write/delete/move operations
+  - **Server Monitoring**: Real-time statistics, connection status, and API explorer
+
+  ## Public Access (Cloudflare Tunnel)
+
+  Expose your homeserver publicly without port forwarding using Cloudflare Tunnel. Open **Settings** (gear icon) → **Cloudflare** tab, enter your tunnel token and domain, then restart the app.
+
+releaseNotes: |
+  Initial release of Pubky Homeserver for Umbrel.
+
+  This version includes:
+
+  - **Pubky Homeserver**: Full-featured decentralized data storage system with PKARR integration
+  - **Web Admin Dashboard**: Intuitive web interface for managing your homeserver
+  - **User Management**: Generate signup tokens, enable/disable users, and monitor activity
+  - **WebDAV File Browser**: Complete file management with list, read, write, delete, and move operations
+  - **Server Monitoring**: Real-time statistics, connection status, and health monitoring
+  - **API Explorer**: Interactive tool for testing admin, client, and metrics endpoints
+  - **PostgreSQL Backend**: Reliable database storage for homeserver data
+  - **Automatic Configuration**: Smart IP and domain detection with manual override options
+developer: Synonym Software, S.A. DE C.V.
+website: https://pubky.org/
+dependencies: []
+repo: https://github.com/pubky/pubky-core/
+support: https://github.com/pubky/pubky-core/issues
+port: 8812
+gallery: []
+path: ""
+defaultUsername: ""
+defaultPassword: ""
+submitter: ""
+submission: ""
+
