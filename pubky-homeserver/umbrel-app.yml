@@ -2,7 +2,7 @@ manifestVersion: 1
 id: pubky-homeserver
 category: utilities
 name: Pubky Homeserver
-version: "0.2.0"
+version: "0.2.1"
 tagline: Decentralized homeserver with admin dashboard
 icon: https://raw.githubusercontent.com/pubky/umbrel-apps-gallery/master/pubky-homeserver/icon.svg
 gallery:
@@ -46,22 +46,40 @@ description: >-
   Expose your homeserver publicly without port forwarding using Cloudflare Tunnel. Open Settings (gear icon), then the Cloudflare tab, enter your tunnel token and domain, and restart the app.
 
 releaseNotes: >-
-  Version 0.2.0:
+  Version 0.2.1:
 
 
-  - File browser. Loads larger directories without timing out, shows clear error messages when the homeserver is unreachable, and adds a Retry button. Resolves a confusing 404-looking message that appeared on slow directory listings.
+  - Settings are now editable. A UID mismatch in 0.2.0 left config.toml read-only in the dashboard; that is fixed.
 
 
-  - Server logs. A Logs tab now appears when the homeserver's log file is present, with level filter, pause, refresh, and a download-as-JSONL action.
+  - Server logs render with proper level coloring and the level filter now works. The dashboard parses the homeserver's tracing-subscriber output into typed entries so the Logs tab no longer shows raw escape codes.
 
 
-  - Config editing. Edit config.toml directly from the dashboard with structural validation and a safety net that prevents the redacted view from overwriting sensitive fields. Stop and start the app from Umbrel to apply changes.
+  - Settings dialog shows a loading spinner on open instead of briefly flashing "Settings are not available in this environment" while it fetches.
 
 
-  - Cloudflare tunnel hardening. The tunnel token is validated on paste before being saved, and the tunnel config file permissions are tighter so the token is not world-readable on the bind mount.
+  - Creating an invite now expands its QR code immediately so it can be scanned with Pubky Ring without an extra click.
 
 
-  - The dashboard image is now published under synonymsoft on Docker Hub (was on a personal account previously) and pinned by digest in this manifest.
+  - The Users tab is hidden until the homeserver exposes the disabled-users endpoint, and lights up automatically once that lands.
+
+
+  Plus all of 0.2.0:
+
+
+  - File browser. Loads larger directories without timing out, shows clear error messages when the homeserver is unreachable, and adds a Retry button.
+
+
+  - Server logs. A Logs tab appears when the homeserver's log file is present, with level filter, pause, refresh, and a download-as-JSONL action.
+
+
+  - Config editing. Edit config.toml directly from the dashboard with structural validation and a safety net for sensitive fields.
+
+
+  - Cloudflare tunnel hardening. Tunnel token validation and tighter file permissions.
+
+
+  - Dashboard image is now published under synonymsoft on Docker Hub and pinned by digest.
 developer: Synonym Software, S.A. DE C.V.
 website: https://pubky.org/
 dependencies: []

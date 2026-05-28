@@ -64,9 +64,16 @@ services:
       start_period: 120s
 
   web:
-    image: synonymsoft/homeserver-dashboard:v0.1.0@sha256:4a9f42ef09643971fb25d3f0e6bb6dc5a9a5239b5b874eccce95dbc5560792b9
+    image: synonymsoft/homeserver-dashboard:v0.1.1@sha256:783140234ed1cef900e04e199a443843c488982913cd1aa6dc441b4a6d5aee61
     restart: on-failure
     stop_grace_period: 1m
+    # Override the dashboard image's baked-in `nextjs` (UID 1001) and run as
+    # root inside the container. The homeserver writes config.toml as root,
+    # so without this the dashboard cannot save config edits even with the
+    # bind mount in rw mode. The process is still confined by container
+    # boundaries and never exposed outside app_proxy. Drop this once the
+    # dashboard and homeserver images agree on a non-root UID.
+    user: "0:0"
     volumes:
       - ${APP_DATA_DIR}/cloudflare:/app/cloudflare-config
       # Read+write so the dashboard can save config.toml edits; the dashboard
