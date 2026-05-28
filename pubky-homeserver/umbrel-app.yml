@@ -2,7 +2,7 @@ manifestVersion: 1
 id: pubky-homeserver
 category: utilities
 name: Pubky Homeserver
-version: "0.1.0"
+version: "0.2.0"
 tagline: Decentralized homeserver with admin dashboard
 icon: https://raw.githubusercontent.com/pubky/umbrel-apps-gallery/master/pubky-homeserver/icon.svg
 gallery:
@@ -46,34 +46,22 @@ description: >-
   Expose your homeserver publicly without port forwarding using Cloudflare Tunnel. Open Settings (gear icon), then the Cloudflare tab, enter your tunnel token and domain, and restart the app.
 
 releaseNotes: >-
-  Initial release of Pubky Homeserver for Umbrel.
+  Version 0.2.0:
 
 
-  This version includes:
+  - File browser. Loads larger directories without timing out, shows clear error messages when the homeserver is unreachable, and adds a Retry button. Resolves a confusing 404-looking message that appeared on slow directory listings.
 
 
-  - Pubky Homeserver. Full-featured decentralized data storage system with PKARR integration.
+  - Server logs. A Logs tab now appears when the homeserver's log file is present, with level filter, pause, refresh, and a download-as-JSONL action.
 
 
-  - Web admin dashboard. Intuitive web interface for managing your homeserver.
+  - Config editing. Edit config.toml directly from the dashboard with structural validation and a safety net that prevents the redacted view from overwriting sensitive fields. Stop and start the app from Umbrel to apply changes.
 
 
-  - User management. Generate signup tokens, enable/disable users, and monitor activity.
+  - Cloudflare tunnel hardening. The tunnel token is validated on paste before being saved, and the tunnel config file permissions are tighter so the token is not world-readable on the bind mount.
 
 
-  - WebDAV file browser. Complete file management with list, read, write, delete, and move operations.
-
-
-  - Server monitoring. Real-time statistics, connection status, and health monitoring.
-
-
-  - API explorer. Interactive tool for testing admin, client, and metrics endpoints.
-
-
-  - PostgreSQL backend. Reliable database storage for homeserver data.
-
-
-  - Automatic configuration. Smart IP and domain detection with manual override options.
+  - The dashboard image is now published under synonymsoft on Docker Hub (was on a personal account previously) and pinned by digest in this manifest.
 developer: Synonym Software, S.A. DE C.V.
 website: https://pubky.org/
 dependencies: []

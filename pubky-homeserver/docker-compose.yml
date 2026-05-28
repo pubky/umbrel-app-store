@@ -64,18 +64,24 @@ services:
       start_period: 120s
 
   web:
-    image: smz9hykx/homeserver-dashboard:latest@sha256:a918a962638e3a8d91f410a3ab6af7bc6f1834caa8f1af58fd8f11c82eb7af71
+    image: synonymsoft/homeserver-dashboard:v0.1.0@sha256:4a9f42ef09643971fb25d3f0e6bb6dc5a9a5239b5b874eccce95dbc5560792b9
     restart: on-failure
     stop_grace_period: 1m
     volumes:
       - ${APP_DATA_DIR}/cloudflare:/app/cloudflare-config
-      - ${APP_DATA_DIR}/homeserver:/app/homeserver-data:ro
+      # Read+write so the dashboard can save config.toml edits; the dashboard
+      # never writes outside this directory.
+      - ${APP_DATA_DIR}/homeserver:/app/homeserver-data
     environment:
       # Server-only env vars (read by API routes, never exposed to client)
       ADMIN_BASE_URL: http://homeserver:6288
       ADMIN_TOKEN: ${APP_PASSWORD}
       PORT: 8812
       HOSTNAME: "0.0.0.0"
+      # Path to the homeserver log file (written by the FIFO+tee in the
+      # homeserver service above). Presence of a readable file at this path
+      # is what makes the dashboard render its Logs tab.
+      HOMESERVER_LOG_PATH: /app/homeserver-data/homeserver.log
     depends_on:
       homeserver:
         condition: service_started
