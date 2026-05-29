@@ -2,7 +2,7 @@ manifestVersion: 1
 id: pubky-homeserver
 category: utilities
 name: Pubky Homeserver
-version: "0.2.1"
+version: "0.2.2"
 tagline: Decentralized homeserver with admin dashboard
 icon: https://raw.githubusercontent.com/pubky/umbrel-apps-gallery/master/pubky-homeserver/icon.svg
 gallery:
@@ -46,19 +46,28 @@ description: >-
   Expose your homeserver publicly without port forwarding using Cloudflare Tunnel. Open Settings (gear icon), then the Cloudflare tab, enter your tunnel token and domain, and restart the app.
 
 releaseNotes: >-
-  Version 0.2.1:
+  Version 0.2.2:
 
 
-  - Settings are now editable. A UID mismatch in 0.2.0 left config.toml read-only in the dashboard; that is fixed.
+  - Settings are now editable end-to-end. 0.2.1 made the bind mount writable but the dashboard process itself was still running as a non-root user and could not save config.toml. The dashboard entrypoint now adjusts the file permissions before dropping privileges so Save actually persists.
 
 
-  - Server logs render with proper level coloring and the level filter now works. The dashboard parses the homeserver's tracing-subscriber output into typed entries so the Logs tab no longer shows raw escape codes.
+  - Logs from the homeserver's pre-tracing startup (lines like "WARNING: Using default values for public_ip ...") are classified as warn level, so the level filter matches them and they get the warn colour.
 
 
-  - Settings dialog shows a loading spinner on open instead of briefly flashing "Settings are not available in this environment" while it fetches.
+  - When the Save button stays read-only, the /api/server-config response now includes process and file ownership diagnostics that the operator can inspect from browser dev tools.
 
 
-  - Creating an invite now expands its QR code immediately so it can be scanned with Pubky Ring without an extra click.
+  Plus 0.2.1:
+
+
+  - Server logs render with proper level coloring and the level filter now works on tracing-subscriber output.
+
+
+  - Settings dialog shows a loading spinner on open instead of briefly flashing "Settings are not available in this environment".
+
+
+  - Creating an invite expands its QR code immediately so it can be scanned with Pubky Ring without an extra click.
 
 
   - The Users tab is hidden until the homeserver exposes the disabled-users endpoint, and lights up automatically once that lands.
