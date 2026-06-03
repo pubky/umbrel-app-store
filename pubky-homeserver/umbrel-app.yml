@@ -2,7 +2,7 @@ manifestVersion: 1
 id: pubky-homeserver
 category: utilities
 name: Pubky Homeserver
-version: "0.2.3"
+version: "0.2.4"
 tagline: Decentralized homeserver with admin dashboard
 icon: https://raw.githubusercontent.com/pubky/umbrel-apps-gallery/master/pubky-homeserver/icon.svg
 gallery:
@@ -46,13 +46,19 @@ description: >-
   Expose your homeserver publicly without port forwarding using Cloudflare Tunnel. Open Settings (gear icon), then the Cloudflare tab, enter your tunnel token and domain, and restart the app.
 
 releaseNotes: >-
-  Version 0.2.3:
+  Version 0.2.4:
 
 
-  - Supply-chain fix. The Cloudflare tunnel container no longer downloads the cloudflared binary at runtime from GitHub releases with no checksum. It now uses the official cloudflare/cloudflared image pinned by SHA256 digest, so the binary is fixed at build time and bytes are verified by Docker.
+  - Save in Settings actually persists. 0.2.3's permission tweak covered the config file but not its parent directory, so the dashboard could not write the temp file the atomic save needs and returned "Failed to write config". The entrypoint now loosens the directory permissions too.
 
 
-  - Browsing a fresh user directory (no files yet) shows "This directory is empty" instead of a scary red 404 error. A homeserver without any signups looks correct now, not broken.
+  Plus 0.2.3:
+
+
+  - Supply-chain fix. The Cloudflare tunnel container no longer downloads the cloudflared binary at runtime from GitHub releases with no checksum. It now uses the official cloudflare/cloudflared image pinned by SHA256 digest.
+
+
+  - Browsing a fresh user directory shows "This directory is empty" instead of a scary red 404 error.
 
 
   Plus 0.2.2:
