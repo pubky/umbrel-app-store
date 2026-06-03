@@ -2,7 +2,7 @@ manifestVersion: 1
 id: pubky-homeserver
 category: utilities
 name: Pubky Homeserver
-version: "0.2.2"
+version: "0.2.3"
 tagline: Decentralized homeserver with admin dashboard
 icon: https://raw.githubusercontent.com/pubky/umbrel-apps-gallery/master/pubky-homeserver/icon.svg
 gallery:
@@ -46,16 +46,25 @@ description: >-
   Expose your homeserver publicly without port forwarding using Cloudflare Tunnel. Open Settings (gear icon), then the Cloudflare tab, enter your tunnel token and domain, and restart the app.
 
 releaseNotes: >-
-  Version 0.2.2:
+  Version 0.2.3:
 
 
-  - Settings are now editable end-to-end. 0.2.1 made the bind mount writable but the dashboard process itself was still running as a non-root user and could not save config.toml. The dashboard entrypoint now adjusts the file permissions before dropping privileges so Save actually persists.
+  - Supply-chain fix. The Cloudflare tunnel container no longer downloads the cloudflared binary at runtime from GitHub releases with no checksum. It now uses the official cloudflare/cloudflared image pinned by SHA256 digest, so the binary is fixed at build time and bytes are verified by Docker.
 
 
-  - Logs from the homeserver's pre-tracing startup (lines like "WARNING: Using default values for public_ip ...") are classified as warn level, so the level filter matches them and they get the warn colour.
+  - Browsing a fresh user directory (no files yet) shows "This directory is empty" instead of a scary red 404 error. A homeserver without any signups looks correct now, not broken.
 
 
-  - When the Save button stays read-only, the /api/server-config response now includes process and file ownership diagnostics that the operator can inspect from browser dev tools.
+  Plus 0.2.2:
+
+
+  - Settings editable end-to-end. The dashboard entrypoint adjusts config.toml permissions before dropping privileges so Save persists.
+
+
+  - Pre-tracing log lines (the "WARNING: Using default values ..." messages from the homeserver's startup) are classified as warn level.
+
+
+  - /api/server-config returns process and file ownership diagnostics for debugging the Read-only badge from browser dev tools.
 
 
   Plus 0.2.1:

@@ -64,7 +64,7 @@ services:
       start_period: 120s
 
   web:
-    image: synonymsoft/homeserver-dashboard:v0.1.2@sha256:a6cc5fa04dcbc232a6f5bdfcc158a8a4dd25568e817caf11533bb6913b817df4
+    image: synonymsoft/homeserver-dashboard:v0.1.3@sha256:40d3e4d130822278821755e103f7f0e8b9ed385ffbb160db474f3ef8fc849542
     restart: on-failure
     stop_grace_period: 1m
     # Override the dashboard image's baked-in `nextjs` (UID 1001) and run as
@@ -94,44 +94,23 @@ services:
         condition: service_started
     # No ports exposed - uses app_proxy instead
 
-  # Optional. Set token and domain via dashboard UI or .env; route hostname to http://homeserver:6286 in Cloudflare.
-  # Uses alpine image with cloudflared downloaded at runtime to support reading token from file.
+  # Cloudflare Tunnel. Optional; the dashboard writes the token to
+  # ${APP_DATA_DIR}/cloudflare/token and the user stops/starts the app to
+  # apply changes. Image is pinned by digest (multi-arch index, amd64 + arm64)
+  # so the binary is fixed at build time, no runtime download.
   cloudflared:
-    image: alpine:3.20
+    image: cloudflare/cloudflared:2026.5.2@sha256:12ff5c6992a9863db4da270746af7c244bcaee49353039af8104268a18d6c4f0
     restart: on-failure
     stop_grace_period: 1m
     volumes:
       - ${APP_DATA_DIR}/cloudflare:/etc/cloudflared-config:ro
-    command:
-      - /bin/sh
-      - -c
-      - |
-        set -e
-        ARCH=$$(uname -m)
-        case "$$ARCH" in
-          x86_64) ARCH="amd64" ;;
-          aarch64) ARCH="arm64" ;;
-        esac
-        if ! command -v cloudflared >/dev/null 2>&1; then
-          echo "Downloading cloudflared for $$ARCH..."
-          wget -q -O /usr/local/bin/cloudflared "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-$$ARCH"
-          chmod +x /usr/local/bin/cloudflared
-        fi
-        TOKEN=""
-        if [ -f /etc/cloudflared-config/token ] && [ -s /etc/cloudflared-config/token ]; then
-          TOKEN="$$(cat /etc/cloudflared-config/token)"
-        elif [ -n "$$CLOUDFLARE_TUNNEL_TOKEN" ]; then
-          TOKEN="$$CLOUDFLARE_TUNNEL_TOKEN"
-        fi
-        if [ -n "$$TOKEN" ]; then
-          echo "Starting Cloudflare tunnel..."
-          exec /usr/local/bin/cloudflared tunnel --no-autoupdate run --token "$$TOKEN"
-        else
-          echo "No Cloudflare tunnel token found. Sleeping..."
-          sleep infinity
-        fi
     environment:
-      CLOUDFLARE_TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN:-}
+      # cloudflared natively reads the token from a file via this env var
+      # (--token-file flag). The dashboard's entrypoint chgrps the file to
+      # UID 65532 (cloudflared's distroless nonroot UID) so this mount + UID
+      # combination can read it via the group bit.
+      TUNNEL_TOKEN_FILE: /etc/cloudflared-config/token
+    command: tunnel --no-autoupdate run
     depends_on:
       homeserver:
         condition: service_started
