@@ -2,7 +2,7 @@ manifestVersion: 1
 id: pubky-homeserver
 category: utilities
 name: Pubky Homeserver
-version: "0.2.4"
+version: "0.2.5"
 tagline: Decentralized homeserver with admin dashboard
 icon: https://raw.githubusercontent.com/pubky/umbrel-apps-gallery/master/pubky-homeserver/icon.svg
 gallery:
@@ -46,10 +46,19 @@ description: >-
   Expose your homeserver publicly without port forwarding using Cloudflare Tunnel. Open Settings (gear icon), then the Cloudflare tab, enter your tunnel token and domain, and restart the app.
 
 releaseNotes: >-
-  Version 0.2.4:
+  Version 0.2.5:
 
 
-  - Save in Settings actually persists. 0.2.3's permission tweak covered the config file but not its parent directory, so the dashboard could not write the temp file the atomic save needs and returned "Failed to write config". The entrypoint now loosens the directory permissions too.
+  - Homeserver image is now built and published from the official pubky-core repo under the synonymsoft organization, replacing the contractor's personal Docker Hub account. No behavior change for users; supply chain is now in our control.
+
+
+  - First-boot bootstrap is handled by a small one-shot init container that renders config.toml from the environment, then exits. The homeserver image itself is now a vanilla binary with no wrapper script, which makes future updates and audits simpler.
+
+
+  Plus 0.2.4:
+
+
+  - Save in Settings actually persists. The entrypoint now loosens both the file and the parent directory permissions so the atomic write-and-rename can complete.
 
 
   Plus 0.2.3:

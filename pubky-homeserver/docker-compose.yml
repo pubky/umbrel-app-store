@@ -22,16 +22,31 @@ services:
       timeout: 5s
       retries: 5
 
+  # One-shot init container that renders /data/config.toml from the env vars
+  # below, then exits. The homeserver service depends on this completing
+  # (service_completed_successfully) so the binary always starts with a
+  # config file in place. Lets the homeserver image stay vanilla (just the
+  # binary, no bootstrap entrypoint).
+  homeserver-config-wrapper:
+    image: synonymsoft/homeserver-umbrel-config-wrapper:6108e0dc74100d5ad65fd9251fac41404db884a9@sha256:9b462ff92bd3b2f90f918e62d0f05d2296056366adf7805e22d6a81ef0faf0e1
+    restart: "no"
+    environment:
+      POSTGRES_USER: pubky
+      POSTGRES_PASSWORD: ${APP_PASSWORD}
+      ADMIN_PASSWORD: ${APP_PASSWORD}
+      CLOUDFLARE_DOMAIN: ${CLOUDFLARE_DOMAIN:-}
+    volumes:
+      - ${APP_DATA_DIR}/homeserver:/data
+
   homeserver:
-    image: smz9hykx/pubky-homeserver:latest@sha256:93e739fa9b85b7aa860c04e68d68b7be26c2a6866849c7a0e3e3ff86ca38e328
+    image: synonymsoft/homeserver:4fc2294bfe40e4696cc27bbdf3838917cb8d11c6@sha256:4c6b4854365ce66e2cf5930f8dbefb11f23134b10852e24be6da3b9a6952e496
     restart: on-failure
     stop_grace_period: 1m
     # Tee stdout+stderr of the homeserver into /data/homeserver.log while
     # keeping `docker logs` working. A FIFO + background `tee` lets the
-    # original entrypoint.sh remain PID 1 via `exec`, so SIGTERM still
-    # reaches the homeserver binary cleanly. The shared /data volume is also
-    # bind-mounted into the web (dashboard) container so it can read the
-    # file to render the Logs tab.
+    # homeserver binary remain PID 1 via `exec`, so SIGTERM still reaches it
+    # cleanly. The shared /data volume is also bind-mounted into the web
+    # (dashboard) container so it can read the log file for the Logs tab.
     entrypoint:
       - /bin/sh
       - -c
@@ -39,15 +54,12 @@ services:
         rm -f /tmp/log-fifo
         mkfifo /tmp/log-fifo
         tee -a /data/homeserver.log < /tmp/log-fifo &
-        exec /usr/local/bin/entrypoint.sh > /tmp/log-fifo 2>&1
+        exec homeserver --data-dir ${DATA_DIR} > /tmp/log-fifo 2>&1
     volumes:
       - ${APP_DATA_DIR}/homeserver:/data
       - ${APP_DATA_DIR}/cloudflare:/etc/pubky-cloudflare:ro
     environment:
       DATA_DIR: /data
-      POSTGRES_PASSWORD: ${APP_PASSWORD}
-      ADMIN_PASSWORD: ${APP_PASSWORD}
-      CLOUDFLARE_DOMAIN: ${CLOUDFLARE_DOMAIN:-}
     ports:
       - "6286:6286"
       - "6287:6287"
@@ -56,6 +68,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      homeserver-config-wrapper:
+        condition: service_completed_successfully
     healthcheck:
       test: ["CMD-SHELL", "nc -z localhost 6288 || exit 1"]
       interval: 15s
