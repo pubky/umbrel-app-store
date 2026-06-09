@@ -76,7 +76,7 @@ services:
       start_period: 120s
 
   web:
-    image: synonymsoft/homeserver-dashboard:v0.1.4@sha256:cc9ffb0f63703b286b3585e48cd33292fcf6a92dabdc30afab3d79b5ba0df3e3
+    image: synonymsoft/homeserver-dashboard:v0.1.5@sha256:fa8bec176d22cbb1c16fc5244b89838f7eb7d2a293cec7ea69ab274ea2148cbf
     restart: on-failure
     stop_grace_period: 1m
     # Override the dashboard image's baked-in `nextjs` (UID 1001) and run as
