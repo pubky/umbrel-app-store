@@ -2,7 +2,7 @@ manifestVersion: 1
 id: pubky-homeserver
 category: utilities
 name: Pubky Homeserver
-version: "0.2.7"
+version: "0.2.8"
 tagline: Decentralized homeserver with admin dashboard
 icon: https://raw.githubusercontent.com/pubky/umbrel-apps-gallery/master/pubky-homeserver/icon.svg
 gallery:
@@ -46,10 +46,10 @@ description: >-
   Expose your homeserver publicly without port forwarding using Cloudflare Tunnel. Open Settings (gear icon), then the Cloudflare tab, enter your tunnel token and domain, and restart the app.
 
 releaseNotes: >-
-  Version 0.2.7:
+  Version 0.2.8:
 
 
-  - Underlying homeserver image refreshed. No user-facing changes; existing data is preserved.
+  - Fixes the homeserver failing to start on 0.2.7. Anyone on 0.2.7 should update to 0.2.8 and the homeserver will come back online.
 
 
   Plus 0.2.4:

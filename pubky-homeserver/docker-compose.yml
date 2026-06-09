@@ -54,12 +54,10 @@ services:
         rm -f /tmp/log-fifo
         mkfifo /tmp/log-fifo
         tee -a /data/homeserver.log < /tmp/log-fifo &
-        exec homeserver --data-dir ${DATA_DIR} > /tmp/log-fifo 2>&1
+        exec homeserver --data-dir /data > /tmp/log-fifo 2>&1
     volumes:
       - ${APP_DATA_DIR}/homeserver:/data
       - ${APP_DATA_DIR}/cloudflare:/etc/pubky-cloudflare:ro
-    environment:
-      DATA_DIR: /data
     ports:
       - "6286:6286"
       - "6287:6287"
