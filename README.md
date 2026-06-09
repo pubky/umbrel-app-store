@@ -6,15 +6,7 @@ Once the app graduates from beta, it will also be available directly from the of
 
 ## Install
 
-1. In umbrelOS, open the **App Store**.
-2. Click your username (top-right) → **Community App Stores** → **Add a Community App Store**.
-3. Paste this repo's URL:
-
-   ```
-   https://github.com/pubky/umbrel-app-store
-   ```
-
-4. The **Pubky** store appears in the App Store sidebar. Open it and install **Pubky Homeserver**.
+See [`INSTALL.md`](./INSTALL.md) for the step-by-step guide (add the community store, install the homeserver, and optionally expose it publicly via Cloudflare Tunnel).
 
 ## What's inside
 
