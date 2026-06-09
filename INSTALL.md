@@ -2,19 +2,17 @@
 
 ## 1. Add this community app store
 
-1. In umbrelOS, open the **App Store**.
-2. Click your username (top-right) → **Community App Stores** → **Add a Community App Store**.
+1. Click the **App Store** icon on your Umbrel home screen.
+2. Top-right, click the **`...`** (three dots) → **Community App Stores**.
 3. Paste:
    ```
    https://github.com/pubky/umbrel-app-store
    ```
 4. Click **Add**.
 
-The **Pubky** store appears in the App Store sidebar.
-
 ## 2. Install the Pubky Homeserver
 
-1. Open the **Pubky** store from the sidebar.
+1. Click **Open** on the **Pubky** community app store.
 2. Click **Pubky Homeserver** → **Install**.
 3. Wait for the install to finish.
 
