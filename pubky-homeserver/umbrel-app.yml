@@ -2,7 +2,7 @@ manifestVersion: 1
 id: pubky-homeserver
 category: utilities
 name: Pubky Homeserver
-version: "0.9.1-1"
+version: "0.9.1-2"
 tagline: Decentralized homeserver with admin dashboard
 icon: https://raw.githubusercontent.com/pubky/umbrel-apps-gallery/master/pubky-homeserver/icon.svg
 gallery:
@@ -46,7 +46,16 @@ description: >-
   Expose your homeserver publicly without port forwarding using Cloudflare Tunnel. Open Settings (gear icon), then the Cloudflare tab, enter your tunnel token and domain, and restart the app.
 
 releaseNotes: >-
-  Version 0.9.1-1:
+  Version 0.9.1-2:
+
+
+  - Automatic Cloudflare Tunnel setup. In Settings, Cloudflare tab: create an API token with the pre-filled link, pick your domain, click Create. The dashboard creates the tunnel, routes it to your homeserver, and sets up DNS, no Zero Trust navigation needed. The token is used once during setup and never stored. Manual setup remains available.
+
+
+  - After setup the tunnel connects within seconds and the dashboard verifies your domain is reachable automatically.
+
+
+  Plus 0.9.1-1:
 
 
   - New version scheme: the app version now matches the bundled homeserver version (0.9.1), with a packaging suffix for app-only updates. The dashboard now labels versions explicitly so there is no ambiguity about which component a number refers to.
