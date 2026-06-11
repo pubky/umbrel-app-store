@@ -2,7 +2,7 @@ manifestVersion: 1
 id: pubky-homeserver
 category: utilities
 name: Pubky Homeserver
-version: "0.2.9"
+version: "0.9.1-1"
 tagline: Decentralized homeserver with admin dashboard
 icon: https://raw.githubusercontent.com/pubky/umbrel-apps-gallery/master/pubky-homeserver/icon.svg
 gallery:
@@ -46,25 +46,28 @@ description: >-
   Expose your homeserver publicly without port forwarding using Cloudflare Tunnel. Open Settings (gear icon), then the Cloudflare tab, enter your tunnel token and domain, and restart the app.
 
 releaseNotes: >-
-  Version 0.2.9:
+  Version 0.9.1-1:
 
 
-  - Cloudflare Tunnel setup is much easier. A new in-dashboard guide walks through the entire flow (Settings, gear icon, Cloudflare tab, Full setup guide link). A footer link is also available from any page.
+  - New version scheme: the app version now matches the bundled homeserver version (0.9.1), with a packaging suffix for app-only updates. The dashboard now labels versions explicitly so there is no ambiguity about which component a number refers to.
 
 
-  - The Cloudflare tab's "Check" button now works on a freshly installed homeserver. The reachability probe previously misreported public domains as private inside Docker.
+  - Setting up a Cloudflare Tunnel now makes your homeserver fully discoverable. After saving the tunnel in Settings and restarting, the homeserver's published record automatically points at your domain; no manual config edits needed. Existing tunnel users: restart the app once to apply.
 
 
-  - The Cloudflare tunnel container can read its tunnel token on first boot. Existing 0.2.8 installs are auto-remediated when 0.2.9 starts; nothing to reconfigure.
+  - View your admin password from Settings (eye icon in the Config tab) to connect other admin tools like pubky-cli.
 
 
-  - Small UI cleanups: the Logs tab no longer shows an implementation-detail subtitle.
+  - The config editor now prevents changing the admin password, which would disconnect the dashboard from the homeserver.
 
 
-  Plus 0.2.8:
+  - The in-dashboard Cloudflare guide gained a verification step (check your record on pkdns.net) and new gotchas.
 
 
-  - Fixes the homeserver failing to start on 0.2.7.
+  Plus 0.2.9:
+
+
+  - In-dashboard Cloudflare Tunnel setup guide, working reachability Check button, and tunnel token readable on first boot.
 
 
   Plus 0.2.4:
