@@ -82,7 +82,7 @@ services:
       start_period: 120s
 
   web:
-    image: synonymsoft/homeserver-dashboard:v0.1.8@sha256:8aa37bd638e31a2ae6be76036b317836bc7e4ed41ed0a483b63b7dcf1cdfb0c7
+    image: synonymsoft/homeserver-dashboard:v0.1.9@sha256:74b0ae7e0a3c66fb2773eac21ceb50e55fb796374f43e37190cf31e818cadc10
     restart: on-failure
     stop_grace_period: 1m
     # Override the dashboard image's baked-in `nextjs` (UID 1001) and run as
@@ -133,6 +133,25 @@ services:
       # combination can read it via the group bit.
       TUNNEL_TOKEN_FILE: /etc/cloudflared-config/token
     command: tunnel --no-autoupdate run
+    depends_on:
+      homeserver:
+        condition: service_started
+
+  # Locally-managed counterpart for the dashboard's "Connect Cloudflare
+  # account" flow, which writes credentials.json + config.yml instead of a
+  # token. The official image is distroless (no shell), so mode selection is
+  # expressed as two services: this one errors-and-retries until config.yml
+  # exists, while the token-mode service above errors-and-retries until the
+  # token file is non-empty. At most one of them runs; the other restarts
+  # quietly with docker's capped backoff. Whichever setup method the user
+  # completes, its container picks the files up within seconds.
+  cloudflared-local:
+    image: cloudflare/cloudflared:2026.5.2@sha256:12ff5c6992a9863db4da270746af7c244bcaee49353039af8104268a18d6c4f0
+    restart: on-failure
+    stop_grace_period: 1m
+    volumes:
+      - ${APP_DATA_DIR}/cloudflare:/etc/cloudflared-config:ro
+    command: tunnel --no-autoupdate --config /etc/cloudflared-config/config.yml run
     depends_on:
       homeserver:
         condition: service_started
