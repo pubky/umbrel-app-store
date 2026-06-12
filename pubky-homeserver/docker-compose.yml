@@ -94,7 +94,10 @@ services:
       homeserver-config-wrapper:
         condition: service_completed_successfully
     healthcheck:
-      test: ["CMD-SHELL", "nc -z localhost 6288 || exit 1"]
+      # 127.0.0.1, not localhost: with container IPv6 enabled, musl resolves
+      # localhost to ::1 first and busybox nc tries only that, but the
+      # homeserver listens on IPv4 only, so the check would never pass.
+      test: ["CMD-SHELL", "nc -z 127.0.0.1 6288 || exit 1"]
       interval: 15s
       timeout: 10s
       retries: 20
