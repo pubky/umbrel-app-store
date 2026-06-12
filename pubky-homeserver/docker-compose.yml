@@ -139,66 +139,51 @@ services:
         condition: service_healthy
     # No ports exposed - uses app_proxy instead
 
-  # Cloudflare Tunnel. Optional; the dashboard writes the token to
-  # ${APP_DATA_DIR}/cloudflare/token and the user stops/starts the app to
-  # apply changes. Image is pinned by digest (multi-arch index, amd64 + arm64)
-  # so the binary is fixed at build time, no runtime download.
+  # Cloudflare Tunnel, consolidated. Optional; ONE service whose entrypoint
+  # selects the mode by file fingerprint with the dashboard's precedence:
+  # config.yml (connected account) > non-empty token > testdrive.env
+  # (preview quick tunnel), waiting quietly when none is configured. This
+  # replaces the previous trio (cloudflared / cloudflared-preview /
+  # cloudflared-local) of which the two non-active ones always crash-looped
+  # as a file gate, because the official distroless image has no shell.
+  # The wrapper/dashboard contract is unchanged: same testdrive.env gate,
+  # same preview/quick.log path and format, same domain precedence, and the
+  # same stop/start-the-app step to apply a mode change (the entrypoint
+  # exec's cloudflared, so a later mode change still needs a restart).
+  #
+  # !!! DECISION-GATED, DO NOT SHIP AS-IS !!!
+  # synonymsoft/cloudflared-runtime is a self-built thin image: digest-pinned
+  # alpine + the SAME digest-pinned official cloudflared binary the trio ran,
+  # cloudflare/cloudflared:2026.5.2@sha256:12ff5c6992a9863db4da270746af7c244bcaee49353039af8104268a18d6c4f0
+  # copied in unchanged. Running Cloudflare's binary inside our image instead
+  # of their image untouched needs an explicit team OK first. v0.1.0 below is
+  # a PLACEHOLDER tag: once the image is actually published, replace it with
+  # tag@sha256:<digest> (release.sh refuses unpinned images, as it should).
   cloudflared:
-    image: cloudflare/cloudflared:2026.5.2@sha256:12ff5c6992a9863db4da270746af7c244bcaee49353039af8104268a18d6c4f0
+    image: synonymsoft/cloudflared-runtime:v0.1.0
+    # on-failure (not always): the entrypoint never exits on its own (no
+    # mode configured means wait-and-recheck, not crash), so a restart only
+    # happens when an exec'd cloudflared dies on a real error. Restarting
+    # then also re-runs the file fingerprint, which is exactly how mode
+    # changes are applied. `always` would add nothing but restarts after
+    # manual stops.
     restart: on-failure
     stop_grace_period: 1m
     volumes:
+      # Parent dir read-only: the entrypoint and cloudflared only READ
+      # token, config.yml, credentials.json and testdrive.env. preview/ is
+      # layered read-write on top because preview mode writes quick.log
+      # there (the file the config wrapper and dashboard read the
+      # quick-tunnel URL from). The wrapper creates the host dir and opens
+      # its perms (UID 65532, the nonroot user this image keeps from the
+      # official one) on every start.
       - ${APP_DATA_DIR}/cloudflare:/etc/cloudflared-config:ro
-    environment:
-      # cloudflared natively reads the token from a file via this env var
-      # (--token-file flag). The dashboard's entrypoint chgrps the file to
-      # UID 65532 (cloudflared's distroless nonroot UID) so this mount + UID
-      # combination can read it via the group bit.
-      TUNNEL_TOKEN_FILE: /etc/cloudflared-config/token
-    command: tunnel --no-autoupdate run
-    depends_on:
-      homeserver:
-        condition: service_started
-
-  # Locally-managed counterpart for the dashboard's "Connect Cloudflare
-  # account" flow, which writes credentials.json + config.yml instead of a
-  # token. The official image is distroless (no shell), so mode selection is
-  # expressed as two services: this one errors-and-retries until config.yml
-  # exists, while the token-mode service above errors-and-retries until the
-  # token file is non-empty. At most one of them runs; the other restarts
-  # quietly with docker's capped backoff. Whichever setup method the user
-  # completes, its container picks the files up within seconds.
-  # Preview mode: an account-less Quick Tunnel whose random URL is published
-  # as the homeserver's domain (testdrive.env gates it - absent file means
-  # TUNNEL_URL is unset and the bare command exits, giving the same
-  # crash-loop gating as the other two cloudflared modes). No depends_on:
-  # it must be getting its URL while the config wrapper waits to publish it,
-  # which is before the homeserver starts. The logfile is how the wrapper
-  # (and the dashboard) learn the URL.
-  cloudflared-preview:
-    image: cloudflare/cloudflared:2026.5.2@sha256:12ff5c6992a9863db4da270746af7c244bcaee49353039af8104268a18d6c4f0
-    restart: on-failure
-    stop_grace_period: 1m
-    # Long-form env_file (path + required: false) needs docker compose >= 2.24.
-    env_file:
-      - path: ${APP_DATA_DIR}/cloudflare/testdrive.env
-        required: false
-    volumes:
-      # Only the preview/ subdir, rw, so this container can write quick.log
-      # but never sees the token or account credentials it does not need.
-      # The config wrapper creates the host dir and opens its perms (UID
-      # 65532) on every start; until then this service just crash-loops,
-      # same as when testdrive.env is absent.
       - ${APP_DATA_DIR}/cloudflare/preview:/etc/cloudflared-config/preview
-    command: tunnel --no-autoupdate --logfile /etc/cloudflared-config/preview/quick.log
-
-  cloudflared-local:
-    image: cloudflare/cloudflared:2026.5.2@sha256:12ff5c6992a9863db4da270746af7c244bcaee49353039af8104268a18d6c4f0
-    restart: on-failure
-    stop_grace_period: 1m
-    volumes:
-      - ${APP_DATA_DIR}/cloudflare:/etc/cloudflared-config:ro
-    command: tunnel --no-autoupdate --config /etc/cloudflared-config/config.yml run
-    depends_on:
-      homeserver:
-        condition: service_started
+    # No TUNNEL_TOKEN_FILE here and no command: the entrypoint exports the
+    # env each mode needs (TUNNEL_TOKEN_FILE for token mode, TUNNEL_URL
+    # sourced from testdrive.env for preview) and runs the per-mode args the
+    # trio used verbatim.
+    # No depends_on: in preview mode the quick-tunnel URL must be getting
+    # logged while the config wrapper waits to publish it, which is BEFORE
+    # the homeserver starts. The old preview service had no depends_on for
+    # that reason; the single service inherits the weakest requirement.
