@@ -2,7 +2,7 @@ manifestVersion: 1
 id: pubky-homeserver
 category: utilities
 name: Pubky Homeserver
-version: "0.9.1-4"
+version: "0.9.1-6"
 tagline: Decentralized homeserver with admin dashboard
 icon: https://raw.githubusercontent.com/pubky/umbrel-apps-gallery/master/pubky-homeserver/icon.svg
 gallery:
@@ -46,7 +46,25 @@ description: >-
   Four ways, from Settings (gear icon), Cloudflare tab: connect your Cloudflare account with one click (recommended), set up with an API token, try Preview mode for a temporary public address with no account or domain at all, or follow the full manual guide. The Overview shows live whether your address is reachable.
 
 releaseNotes: >-
-  Version 0.9.1-4:
+  Version 0.9.1-6:
+
+
+  - Restart reminders now disappear by themselves once your domain is detected as live.
+
+
+  - New Disconnect button: tear down your Cloudflare setup in one place to start over or switch accounts. The tunnel and DNS record in your Cloudflare account are not deleted (we keep no credentials that could) - the dashboard tells you exactly what to remove there.
+
+
+  Plus 0.9.1-5:
+
+
+  - Preview mode: get a temporary public address with no Cloudflare account and no domain, now actually published to the Pubky network and refreshed automatically on every restart. The limitations are listed right on the card; for a permanent address the real setups remain one click away.
+
+
+  - Restart instructions are now shown as bright callouts so they are hard to miss.
+
+
+  Plus 0.9.1-4:
 
 
   - The Overview now shows live whether your public domain is reachable from the internet, with a Fix it button that takes you straight to the Cloudflare setup if it is not.
