@@ -2,7 +2,7 @@ manifestVersion: 1
 id: pubky-homeserver
 category: utilities
 name: Pubky Homeserver
-version: "0.9.1-6"
+version: "0.9.1-7"
 tagline: Decentralized homeserver with admin dashboard
 icon: https://raw.githubusercontent.com/pubky/umbrel-apps-gallery/master/pubky-homeserver/icon.svg
 gallery:
@@ -52,7 +52,32 @@ description: >-
   Four ways, from Settings (gear icon), Cloudflare tab: connect your Cloudflare account with one click (recommended), set up with an API token, try Preview mode for a temporary public address with no account or domain at all, or follow the full manual guide. The Overview shows live whether your address is reachable.
 
 releaseNotes: >-
-  Version 0.9.1-6:
+  Version 0.9.1-7:
+
+
+  This release is a large polish pass over Cloudflare setup and the dashboard, bundling dashboard v0.1.15 and config-wrapper v0.0.6.
+
+
+  Clearer, more reliable public access:
+  - The Status section is now the single place that shows your connection state. Setup methods (Connect, API token, Preview, Manual) collapse once something is configured, so the screen stops contradicting itself.
+  - The Connect flow states what you need up front (a free Cloudflare account with your domain) and, after you authorize, lets you pick just a subdomain instead of typing a full hostname, so wrong-domain errors no longer happen.
+  - The dashboard now tells the truth about two different things: whether your address answers over HTTPS, and whether your homeserver is actually published to the Pubky network. It reminds you to restart the app only when a restart is really needed, and that reminder survives a page reload.
+
+
+  Guidance for new users:
+  - A get-started checklist walks you from making your homeserver reachable, to creating your first invite, to signing up from Pubky Ring.
+  - A badge on your published address tells you whether it is publicly reachable, private-network only, or localhost only.
+
+
+  Fixes and hardening:
+  - Completing a real Cloudflare setup now turns Preview mode off and stops its temporary tunnel.
+  - Interrupted or repeated setup steps recover cleanly instead of getting stuck or leaving a half-configured state.
+  - Your homeserver no longer publishes an unreachable internal address, and a stale domain is cleared when its tunnel is removed.
+  - The app starts more reliably, config edits are written safely, and the unauthenticated metrics port is no longer exposed on your network.
+  - Smaller touches: working API explorer tabs, Cancel buttons on file dialogs, clearer error messages, and a friendlier first-run experience.
+
+
+  Plus 0.9.1-6:
 
 
   - Restart reminders now disappear by themselves once your domain is detected as live.

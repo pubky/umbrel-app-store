@@ -26,7 +26,7 @@ services:
   # config file in place. Lets the homeserver image stay vanilla (just the
   # binary, no bootstrap entrypoint).
   homeserver-config-wrapper:
-    image: synonymsoft/homeserver-umbrel-config-wrapper:v0.0.5@sha256:19212af45cb1d2bcb3eed79ca98e2c50efc60a8616fddfaac978b2b2af249de1
+    image: synonymsoft/homeserver-umbrel-config-wrapper:v0.0.6@sha256:ff3123998603b94caef2641c81dea7fade2376084110807cc5065300698079ee
     # on-failure so a transient hiccup retries instead of leaving the
     # service_completed_successfully gate below permanently unsatisfied
     # (which would keep the whole app from ever starting).
@@ -104,7 +104,7 @@ services:
       start_period: 120s
 
   web:
-    image: synonymsoft/homeserver-dashboard:v0.1.12@sha256:c54953115939ac3c04a5f4915b6fc504dd05bf9af0bdb558f00c0a4fb112cb79
+    image: synonymsoft/homeserver-dashboard:v0.1.15@sha256:3ce2ece4b8ab85590a7eeec90c2b524e2d5bfbb3a8c05851359c8faf44ff55b3
     restart: on-failure
     stop_grace_period: 1m
     # Start the container as root instead of the image's baked-in `nextjs`
