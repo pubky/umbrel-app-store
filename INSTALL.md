@@ -20,16 +20,14 @@ When done, the Pubky Homeserver tile appears on your Umbrel home screen. Click i
 
 ## 3. (Optional) Expose your homeserver to the public internet
 
-A homeserver behind your home NAT can only be reached from your LAN unless you expose it publicly. The easiest way is a Cloudflare Tunnel (free, no port forwarding).
+A homeserver behind your home NAT can only be reached from your LAN unless you expose it publicly. Open the dashboard, click the **gear icon** (Settings), switch to the **Cloudflare** tab, and pick one of four ways:
 
-The dashboard ships with a built-in setup guide:
+- **Connect Cloudflare account** (recommended): click Connect, log in on cloudflare.com, click Authorize, type your hostname. Nothing to copy or paste. Needs a free Cloudflare account and a domain.
+- **API token**: paste a narrowly-scoped Cloudflare API token (pre-filled creation link provided), pick your domain, click Create.
+- **Preview mode**: no account and no domain at all - one click gives you a temporary public address, published to the Pubky network and refreshed on every restart. The limitations are listed on the card; use it for trying things out, not production.
+- **Manual setup**: the classic flow, with a full step-by-step guide linked below the form and from the dashboard footer.
 
-1. Open the homeserver dashboard.
-2. Click the **gear icon** (Settings) in the top-right.
-3. Switch to the **Cloudflare** tab.
-4. Click **Full setup guide** below the Save button.
-
-The guide walks through Cloudflare-side setup (creating the tunnel, getting the token), dashboard-side configuration, and verification. It is also linked from the dashboard footer.
+The Overview shows live whether your published domain is reachable, with a Fix it button if it is not.
 
 ## Reporting issues
 

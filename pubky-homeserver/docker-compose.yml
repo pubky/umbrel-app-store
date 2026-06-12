@@ -28,7 +28,7 @@ services:
   # config file in place. Lets the homeserver image stay vanilla (just the
   # binary, no bootstrap entrypoint).
   homeserver-config-wrapper:
-    image: synonymsoft/homeserver-umbrel-config-wrapper:6108e0dc74100d5ad65fd9251fac41404db884a9@sha256:9b462ff92bd3b2f90f918e62d0f05d2296056366adf7805e22d6a81ef0faf0e1
+    image: synonymsoft/homeserver-umbrel-config-wrapper:v0.0.5@sha256:19212af45cb1d2bcb3eed79ca98e2c50efc60a8616fddfaac978b2b2af249de1
     restart: "no"
     environment:
       POSTGRES_USER: pubky
@@ -36,13 +36,11 @@ services:
       ADMIN_PASSWORD: ${APP_PASSWORD}
     volumes:
       - ${APP_DATA_DIR}/homeserver:/data
-      # The wrapper reads the dashboard-saved Cloudflare domain from
-      # /etc/pubky-cloudflare/domain and, on every start, points the
-      # homeserver's published record at it (icann_domain +
-      # public_icann_http_port=443 in config.toml). Without this mount the
-      # file is invisible and icann_domain stays localhost, so other Pubky
-      # tools can never discover the homeserver at its public domain.
-      - ${APP_DATA_DIR}/cloudflare:/etc/pubky-cloudflare:ro
+      # The wrapper reads the dashboard-saved Cloudflare domain (or the
+      # preview tunnel's logged URL) and, on every start, points the
+      # homeserver's published record at it. rw because the wrapper also
+      # prepares the preview logfile dir perms (UID 65532) at each start.
+      - ${APP_DATA_DIR}/cloudflare:/etc/pubky-cloudflare
 
   homeserver:
     image: synonymsoft/homeserver:f90548c7531ebdf83f14dbe209eb5d9401c27244@sha256:62fc80c453fe541ade43e7f6a72cb29c0bf5833487915a49f2417c304cb37e86
@@ -82,7 +80,7 @@ services:
       start_period: 120s
 
   web:
-    image: synonymsoft/homeserver-dashboard:v0.1.10@sha256:3b5f48efd5738b4ae53aa09e6185961f4f22d0c2810c132956f4f9444955edb8
+    image: synonymsoft/homeserver-dashboard:v0.1.11@sha256:043767797bd5f4ad999ae1351877373cfca0ddc67bd70be6d3519c33559e87ce
     restart: on-failure
     stop_grace_period: 1m
     # Override the dashboard image's baked-in `nextjs` (UID 1001) and run as
@@ -145,6 +143,24 @@ services:
   # token file is non-empty. At most one of them runs; the other restarts
   # quietly with docker's capped backoff. Whichever setup method the user
   # completes, its container picks the files up within seconds.
+  # Preview mode: an account-less Quick Tunnel whose random URL is published
+  # as the homeserver's domain (testdrive.env gates it - absent file means
+  # TUNNEL_URL is unset and the bare command exits, giving the same
+  # crash-loop gating as the other two cloudflared modes). No depends_on:
+  # it must be getting its URL while the config wrapper waits to publish it,
+  # which is before the homeserver starts. The logfile is how the wrapper
+  # (and the dashboard) learn the URL.
+  cloudflared-preview:
+    image: cloudflare/cloudflared:2026.5.2@sha256:12ff5c6992a9863db4da270746af7c244bcaee49353039af8104268a18d6c4f0
+    restart: on-failure
+    stop_grace_period: 1m
+    env_file:
+      - path: ${APP_DATA_DIR}/cloudflare/testdrive.env
+        required: false
+    volumes:
+      - ${APP_DATA_DIR}/cloudflare:/etc/cloudflared-config
+    command: tunnel --no-autoupdate --logfile /etc/cloudflared-config/preview/quick.log
+
   cloudflared-local:
     image: cloudflare/cloudflared:2026.5.2@sha256:12ff5c6992a9863db4da270746af7c244bcaee49353039af8104268a18d6c4f0
     restart: on-failure

@@ -40,10 +40,10 @@ description: >-
   - Server monitoring. Real-time statistics, connection status, and API explorer.
 
 
-  Public access via Cloudflare Tunnel:
+  Public access without port forwarding:
 
 
-  Expose your homeserver publicly without port forwarding using Cloudflare Tunnel. Open Settings (gear icon), then the Cloudflare tab, enter your tunnel token and domain, and restart the app.
+  Four ways, from Settings (gear icon), Cloudflare tab: connect your Cloudflare account with one click (recommended), set up with an API token, try Preview mode for a temporary public address with no account or domain at all, or follow the full manual guide. The Overview shows live whether your address is reachable.
 
 releaseNotes: >-
   Version 0.9.1-4:
