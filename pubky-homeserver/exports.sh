@@ -5,13 +5,15 @@
 #
 # Two pitfalls for whoever adds a consumer app later:
 #
-# 1. umbreld sources this file while starting EVERY app, with THAT app's
-#    environment. Variables like APP_PASSWORD therefore belong to the app
-#    being started, not to this one, so nothing here may be derived from
-#    them. (An earlier version exported an admin token from
-#    ${APP_PASSWORD:-}, which yielded the consumer app's password.) The
-#    admin API still requires this app's APP_PASSWORD as the token; a
-#    consumer must obtain it out of band (e.g. the user pastes it).
+# 1. umbreld sources this file when starting this app itself and any app
+#    that lists pubky-homeserver in its manifest `dependencies`. In both
+#    cases app-specific variables like APP_PASSWORD are exported only
+#    AFTER the exports.sh sourcing loop, so at source time they are unset
+#    or stale; nothing here may be derived from them. (An earlier version
+#    exported an admin token from ${APP_PASSWORD:-}, which silently
+#    yielded an empty or stale value.) The admin API still requires this
+#    app's APP_PASSWORD as the token; a consumer must obtain it out of
+#    band (e.g. the user pastes it).
 #
 # 2. Compose service aliases like "homeserver" only resolve inside this
 #    app's own network. From other apps, use the static container name
