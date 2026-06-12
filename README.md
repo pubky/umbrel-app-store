@@ -10,7 +10,7 @@ See [`INSTALL.md`](./INSTALL.md) for the step-by-step guide (add the community s
 
 ## What's inside
 
-- [`pubky-homeserver/`](./pubky-homeserver) - the Pubky Homeserver app (homeserver + admin dashboard + cloudflared sidecar). Manifest, docker-compose, and any export hooks.
+- [`pubky-homeserver/`](./pubky-homeserver) - the Pubky Homeserver app: manifest, docker-compose, and export hooks. The compose file runs the homeserver itself, a PostgreSQL database, an admin dashboard (`web`), a one-shot config wrapper that renders `config.toml` at startup, and three mode-gated `cloudflared` services (token, locally-managed account, and account-less Preview) of which at most one is active.
 - [`umbrel-app-store.yml`](./umbrel-app-store.yml) - store metadata (`id: pubky`, `name: Pubky`). Umbrel reads this when you add the store.
 
 ## Versioning
@@ -38,4 +38,4 @@ History note: releases up to `0.2.9` used an independent app semver; the scheme 
 
 ## Reporting issues
 
-Issues with the app packaging (docker-compose, manifest, install flow) go in this repo. Issues with the homeserver itself belong in [`pubky/pubky-core`](https://github.com/pubky/pubky-core/issues); dashboard issues in [`pubky/homeserver-dashboard`](https://github.com/pubky/homeserver-dashboard/issues).
+Issues with the app packaging (docker-compose, manifest, install flow) go in this repo; the manifest's `support:` link points here too. Issues with the homeserver itself belong in [`pubky/pubky-core`](https://github.com/pubky/pubky-core/issues); dashboard issues in [`pubky/homeserver-dashboard`](https://github.com/pubky/homeserver-dashboard/issues).
