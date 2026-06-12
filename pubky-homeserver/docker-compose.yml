@@ -29,11 +29,18 @@ services:
   # binary, no bootstrap entrypoint).
   homeserver-config-wrapper:
     image: synonymsoft/homeserver-umbrel-config-wrapper:v0.0.5@sha256:19212af45cb1d2bcb3eed79ca98e2c50efc60a8616fddfaac978b2b2af249de1
-    restart: "no"
+    # on-failure so a transient hiccup retries instead of leaving the
+    # service_completed_successfully gate below permanently unsatisfied
+    # (which would keep the whole app from ever starting).
+    restart: on-failure
     environment:
       POSTGRES_USER: pubky
       POSTGRES_PASSWORD: ${APP_PASSWORD}
       ADMIN_PASSWORD: ${APP_PASSWORD}
+      # Umbrel-provided hints the wrapper can use as fallbacks when no
+      # tunnel domain is configured (both may be empty).
+      DEVICE_DOMAIN_NAME: ${DEVICE_DOMAIN_NAME:-}
+      PUBLIC_IP: ${PUBLIC_IP:-}
     volumes:
       - ${APP_DATA_DIR}/homeserver:/data
       # The wrapper reads the dashboard-saved Cloudflare domain (or the
