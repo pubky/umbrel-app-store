@@ -1,5 +1,3 @@
-version: "3.7"
-
 services:
   app_proxy:
     environment:
@@ -83,8 +81,13 @@ services:
     ports:
       - "6286:6286"
       - "6287:6287"
+      # Admin API. Guarded by APP_PASSWORD (X-Admin-Password) and published
+      # deliberately so users can point pubky-cli at it from the LAN, as the
+      # release notes advertise.
       - "6288:6288"
-      - "6289:6289"
+      # 6289 (Prometheus metrics) is intentionally NOT published: it is
+      # unauthenticated and would otherwise be exposed to the whole LAN.
+      # It remains reachable on the container network for other apps.
     depends_on:
       postgres:
         condition: service_healthy
@@ -101,12 +104,14 @@ services:
     image: synonymsoft/homeserver-dashboard:v0.1.12@sha256:c54953115939ac3c04a5f4915b6fc504dd05bf9af0bdb558f00c0a4fb112cb79
     restart: on-failure
     stop_grace_period: 1m
-    # Override the dashboard image's baked-in `nextjs` (UID 1001) and run as
-    # root inside the container. The homeserver writes config.toml as root,
-    # so without this the dashboard cannot save config edits even with the
-    # bind mount in rw mode. The process is still confined by container
-    # boundaries and never exposed outside app_proxy. Drop this once the
-    # dashboard and homeserver images agree on a non-root UID.
+    # Start the container as root instead of the image's baked-in `nextjs`
+    # (UID 1001) so the entrypoint's root phase can run: it chmods/chowns
+    # config.toml (written root-owned by the config wrapper) and the
+    # cloudflare files so they are editable, then drops to the nextjs user
+    # via su-exec before exec'ing the actual server. Without this override
+    # the entrypoint would start as nextjs and the permission phase would
+    # silently no-op, leaving Save in Settings broken. The server process
+    # itself never runs as root.
     user: "0:0"
     volumes:
       - ${APP_DATA_DIR}/cloudflare:/app/cloudflare-config
@@ -129,7 +134,9 @@ services:
       HOMESERVER_LOG_PATH: /app/homeserver-data/homeserver.log
     depends_on:
       homeserver:
-        condition: service_started
+        # service_healthy (6288 nc check above) so the dashboard never comes
+        # up pointing at an admin API that is not accepting connections yet.
+        condition: service_healthy
     # No ports exposed - uses app_proxy instead
 
   # Cloudflare Tunnel. Optional; the dashboard writes the token to
@@ -172,11 +179,17 @@ services:
     image: cloudflare/cloudflared:2026.5.2@sha256:12ff5c6992a9863db4da270746af7c244bcaee49353039af8104268a18d6c4f0
     restart: on-failure
     stop_grace_period: 1m
+    # Long-form env_file (path + required: false) needs docker compose >= 2.24.
     env_file:
       - path: ${APP_DATA_DIR}/cloudflare/testdrive.env
         required: false
     volumes:
-      - ${APP_DATA_DIR}/cloudflare:/etc/cloudflared-config
+      # Only the preview/ subdir, rw, so this container can write quick.log
+      # but never sees the token or account credentials it does not need.
+      # The config wrapper creates the host dir and opens its perms (UID
+      # 65532) on every start; until then this service just crash-loops,
+      # same as when testdrive.env is absent.
+      - ${APP_DATA_DIR}/cloudflare/preview:/etc/cloudflared-config/preview
     command: tunnel --no-autoupdate --logfile /etc/cloudflared-config/preview/quick.log
 
   cloudflared-local:

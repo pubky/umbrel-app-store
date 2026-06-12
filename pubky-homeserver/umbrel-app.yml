@@ -10,34 +10,40 @@ gallery:
   - https://raw.githubusercontent.com/pubky/umbrel-apps-gallery/master/pubky-homeserver/2.jpg
   - https://raw.githubusercontent.com/pubky/umbrel-apps-gallery/master/pubky-homeserver/3.jpg
 description: >-
-  Pubky unlocks the web by realizing a vision for a key-based, self-regulating web that puts users in control.
+  Pubky Homeserver hosts your own Pubky account and your data on your Umbrel, instead of on someone else's server. You connect from Pubky Ring (the Pubky phone app): create an invite code in this app's dashboard, scan it with Ring, and your account lives at home.
 
 
-  Pubky Homeserver is a decentralized data storage system that acts as your agent on the Internet, combining practical decentralized routing and identity (PKARR) with simple interoperable hosting for censorship resistance and credible exit.
+  What you'll need:
+
+
+  - Nothing extra to install it: the app runs out of the box.
+
+
+  - For a permanent public address: a free Cloudflare account, ideally with your own domain.
+
+
+  - No account or domain? Preview mode gives you a temporary public address with neither.
+
+
+  - The Pubky Ring app on your phone to create your first account.
+
+
+  Why run your own: Pubky unlocks the web by realizing a vision for a key-based, self-regulating web that puts users in control. Your homeserver acts as your agent on the Internet, combining decentralized routing and identity (PKARR) with simple interoperable hosting for censorship resistance and credible exit: your data stays yours, and you can migrate it to another homeserver at any time.
 
 
   Features:
 
 
-  - Decentralized storage architecture. Operate your own homeserver or use services from individuals, cooperatives, or commercial entities.
-
-
-  - RESTful API. Any service can access data through a standard RESTful API.
-
-
-  - User data control. Full control over your data with the ability to migrate between homeservers.
-
-
-  - Web-based admin dashboard. Manage users, files, and server configuration through an intuitive web interface.
-
-
-  - User management. Generate signup tokens, enable/disable users, and monitor server activity.
+  - Web-based admin dashboard. Manage users, invite codes, files, and server configuration through an intuitive web interface.
 
 
   - WebDAV file browser. Full file management with list, read, write, delete, and move operations.
 
 
-  - Server monitoring. Real-time statistics, connection status, and API explorer.
+  - RESTful API. Any service can access data through a standard RESTful API.
+
+
+  - Server monitoring. The dashboard shows server status, whether your public address is reachable, and an API explorer.
 
 
   Public access without port forwarding:
@@ -64,124 +70,19 @@ releaseNotes: >-
   - Restart instructions are now shown as bright callouts so they are hard to miss.
 
 
-  Plus 0.9.1-4:
-
-
-  - The Overview now shows live whether your public domain is reachable from the internet, with a Fix it button that takes you straight to the Cloudflare setup if it is not.
-
-
-  Plus 0.9.1-3:
-
-
-  - Connect your Cloudflare account with one click. The new recommended setup: click Connect, log in on cloudflare.com, click Authorize, type your hostname, done. Nothing to copy or paste.
-
-
-  - Try it with no account at all: the new "Test public access" button gives you a temporary public URL (no Cloudflare account, no domain) so you can verify your homeserver is reachable before committing to a setup.
-
-
-  - All four setup methods now live side by side: Connect account, API token, temporary test URL, and full manual setup.
-
-
-  Plus 0.9.1-2:
-
-
-  - Automatic Cloudflare Tunnel setup. In Settings, Cloudflare tab: create an API token with the pre-filled link, pick your domain, click Create. The dashboard creates the tunnel, routes it to your homeserver, and sets up DNS, no Zero Trust navigation needed. The token is used once during setup and never stored. Manual setup remains available.
-
-
-  - After setup the tunnel connects within seconds and the dashboard verifies your domain is reachable automatically.
-
-
-  Plus 0.9.1-1:
-
-
-  - New version scheme: the app version now matches the bundled homeserver version (0.9.1), with a packaging suffix for app-only updates. The dashboard now labels versions explicitly so there is no ambiguity about which component a number refers to.
-
-
-  - Setting up a Cloudflare Tunnel now makes your homeserver fully discoverable. After saving the tunnel in Settings and restarting, the homeserver's published record automatically points at your domain; no manual config edits needed. Existing tunnel users: restart the app once to apply.
-
-
-  - View your admin password from Settings (eye icon in the Config tab) to connect other admin tools like pubky-cli.
-
-
-  - The config editor now prevents changing the admin password, which would disconnect the dashboard from the homeserver.
-
-
-  - The in-dashboard Cloudflare guide gained a verification step (check your record on pkdns.net) and new gotchas.
-
-
-  Plus 0.2.9:
-
-
-  - In-dashboard Cloudflare Tunnel setup guide, working reachability Check button, and tunnel token readable on first boot.
-
-
-  Plus 0.2.4:
-
-
-  - Save in Settings actually persists. The entrypoint now loosens both the file and the parent directory permissions so the atomic write-and-rename can complete.
-
-
-  Plus 0.2.3:
-
-
-  - Supply-chain fix. The Cloudflare tunnel container no longer downloads the cloudflared binary at runtime from GitHub releases with no checksum. It now uses the official cloudflare/cloudflared image pinned by SHA256 digest.
-
-
-  - Browsing a fresh user directory shows "This directory is empty" instead of a scary red 404 error.
-
-
-  Plus 0.2.2:
-
-
-  - Settings editable end-to-end. The dashboard entrypoint adjusts config.toml permissions before dropping privileges so Save persists.
-
-
-  - Pre-tracing log lines (the "WARNING: Using default values ..." messages from the homeserver's startup) are classified as warn level.
-
-
-  - /api/server-config returns process and file ownership diagnostics for debugging the Read-only badge from browser dev tools.
-
-
-  Plus 0.2.1:
-
-
-  - Server logs render with proper level coloring and the level filter now works on tracing-subscriber output.
-
-
-  - Settings dialog shows a loading spinner on open instead of briefly flashing "Settings are not available in this environment".
-
-
-  - Creating an invite expands its QR code immediately so it can be scanned with Pubky Ring without an extra click.
-
-
-  - The Users tab is hidden until the homeserver exposes the disabled-users endpoint, and lights up automatically once that lands.
-
-
-  Plus all of 0.2.0:
-
-
-  - File browser. Loads larger directories without timing out, shows clear error messages when the homeserver is unreachable, and adds a Retry button.
-
-
-  - Server logs. A Logs tab appears when the homeserver's log file is present, with level filter, pause, refresh, and a download-as-JSONL action.
-
-
-  - Config editing. Edit config.toml directly from the dashboard with structural validation and a safety net for sensitive fields.
-
-
-  - Cloudflare tunnel hardening. Tunnel token validation and tighter file permissions.
-
-
-  - Dashboard image is now published under synonymsoft on Docker Hub and pinned by digest.
+  Release notes for older versions: https://github.com/pubky/umbrel-app-store/releases
 developer: Synonym Software, S.A. DE C.V.
 website: https://pubky.org/
 dependencies: []
 repo: https://github.com/pubky/pubky-core/
-support: https://github.com/pubky/pubky-core/issues
+support: https://github.com/pubky/umbrel-app-store/issues
 port: 8812
 path: ""
 defaultUsername: ""
-defaultPassword: ""
+# Umbrel derives this app's APP_PASSWORD deterministically; this flag makes
+# the native credentials UI show it as the app's password (no defaultPassword
+# line, umbreld fills it in - same pattern as pi-hole/nextcloud upstream).
+deterministicPassword: true
 submitter: ""
 submission: ""
 
