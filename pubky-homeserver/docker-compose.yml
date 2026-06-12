@@ -58,10 +58,21 @@ services:
     # homeserver binary remain PID 1 via `exec`, so SIGTERM still reaches it
     # cleanly. The shared /data volume is also bind-mounted into the web
     # (dashboard) container so it can read the log file for the Logs tab.
+    # Before tee starts, cap the log: the bind-mounted file survives
+    # upgrades, so without this it would grow for the lifetime of the
+    # install. If it exceeds MAX bytes at boot, keep only the last KEEP
+    # bytes (busybox-compatible: tail -c to a tmp file + mv).
+    # $$ is compose escaping for a literal $ in the shell snippet.
     entrypoint:
       - /bin/sh
       - -c
       - |
+        MAX=10485760  # cap: rotate once the log exceeds ~10MB
+        KEEP=2097152  # keep the last ~2MB on rotation
+        if [ -f /data/homeserver.log ] && [ "$$(wc -c < /data/homeserver.log)" -gt "$$MAX" ]; then
+          tail -c "$$KEEP" /data/homeserver.log > /data/homeserver.log.tmp
+          mv /data/homeserver.log.tmp /data/homeserver.log
+        fi
         rm -f /tmp/log-fifo
         mkfifo /tmp/log-fifo
         tee -a /data/homeserver.log < /tmp/log-fifo &
