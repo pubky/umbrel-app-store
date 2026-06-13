@@ -2,7 +2,7 @@ manifestVersion: 1
 id: pubky-homeserver
 category: utilities
 name: Pubky Homeserver
-version: "0.9.1-10"
+version: "0.9.1-11"
 tagline: Decentralized homeserver with admin dashboard
 icon: https://raw.githubusercontent.com/pubky/umbrel-apps-gallery/master/pubky-homeserver/icon.svg
 gallery:
@@ -52,7 +52,16 @@ description: >-
   Four ways, from Settings (gear icon), Cloudflare tab: connect your Cloudflare account with one click (recommended), set up with an API token, try Preview mode for a temporary public address with no account or domain at all, or follow the full manual guide. The Overview shows live whether your address is reachable.
 
 releaseNotes: >-
-  Version 0.9.1-10:
+  Version 0.9.1-11:
+
+
+  Polishes the Overview's reachability check (dashboard v0.1.19).
+
+
+  - The "Make your homeserver reachable" step no longer briefly shows "Set up access" while the check is still running. It now shows a "Checking…" spinner until the result is known, then either marks the step done or shows the set-up instruction. An already-reachable homeserver no longer flashes a misleading "set up" prompt each time the Overview loads, and the published-address row reads "Checking…" from the start instead of momentarily showing "Not set up".
+
+
+  Plus 0.9.1-10:
 
 
   Polishes the PKARR record verification added last release (dashboard v0.1.18).
