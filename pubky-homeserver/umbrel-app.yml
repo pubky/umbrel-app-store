@@ -2,7 +2,7 @@ manifestVersion: 1
 id: pubky-homeserver
 category: utilities
 name: Pubky Homeserver
-version: "0.9.1-8"
+version: "0.9.1-9"
 tagline: Decentralized homeserver with admin dashboard
 icon: https://raw.githubusercontent.com/pubky/umbrel-apps-gallery/master/pubky-homeserver/icon.svg
 gallery:
@@ -52,7 +52,17 @@ description: >-
   Four ways, from Settings (gear icon), Cloudflare tab: connect your Cloudflare account with one click (recommended), set up with an API token, try Preview mode for a temporary public address with no account or domain at all, or follow the full manual guide. The Overview shows live whether your address is reachable.
 
 releaseNotes: >-
-  Version 0.9.1-8:
+  Version 0.9.1-9:
+
+
+  Adds PKARR record verification to the dashboard Overview (dashboard v0.1.17).
+
+
+  - The new "Pubky network" row on the Overview checks the record your homeserver published to the Pubky network (the DHT), not just whether your address answers over HTTPS. The dashboard fetches the record from the Pubky relays, verifies its signature against your homeserver's key, and compares the published address and domain against what your homeserver is configured to publish. It shows "Published" when everything matches, "Doesn't match config" with a side-by-side comparison when it does not, "Not published" when no record is found, and "Can't verify" when the relays cannot be reached (which never means anything is wrong with your server).
+  - A "View" button shows the actual record (its DNS entries, when it was published, and a link to verify independently on pkdns.net). An older-but-correct record is treated as healthy, so the check never nags you about timing.
+
+
+  Plus 0.9.1-8:
 
 
   Fixes Preview mode and polishes the dashboard Overview (dashboard v0.1.16).
