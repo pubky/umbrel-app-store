@@ -142,42 +142,38 @@ services:
         condition: service_healthy
     # No ports exposed - uses app_proxy instead
 
-  # Cloudflare Tunnel. Optional; the dashboard writes the token to
-  # ${APP_DATA_DIR}/cloudflare/token and the user stops/starts the app to
-  # apply changes. Image is pinned by digest (multi-arch index, amd64 + arm64)
-  # so the binary is fixed at build time, no runtime download.
+  # Cloudflare Tunnel (the persistent one). Optional. Every setup tier the
+  # dashboard offers - API token, manual paste, and "Connect account" -
+  # now writes the same locally-managed pair (credentials.json + config.yml),
+  # so a single `--config` run serves them all; there is no separate
+  # token-mode container. (A pasted/created token is decoded into
+  # credentials.json by the dashboard; older token-only installs are migrated
+  # to config.yml by the dashboard entrypoint on the next boot.) The image is
+  # pinned by digest (multi-arch index, amd64 + arm64); the distroless image
+  # has no shell, so gating is by file presence: cloudflared errors-and-retries
+  # (docker's capped backoff) until config.yml exists, then runs it. The user
+  # stops/starts the app to apply changes (the restart also publishes the
+  # domain to the Pubky network).
   cloudflared:
     image: cloudflare/cloudflared:2026.5.2@sha256:12ff5c6992a9863db4da270746af7c244bcaee49353039af8104268a18d6c4f0
     restart: on-failure
     stop_grace_period: 1m
     volumes:
       - ${APP_DATA_DIR}/cloudflare:/etc/cloudflared-config:ro
-    environment:
-      # cloudflared natively reads the token from a file via this env var
-      # (--token-file flag). The dashboard's entrypoint chgrps the file to
-      # UID 65532 (cloudflared's distroless nonroot UID) so this mount + UID
-      # combination can read it via the group bit.
-      TUNNEL_TOKEN_FILE: /etc/cloudflared-config/token
-    command: tunnel --no-autoupdate run
+    command: tunnel --no-autoupdate --config /etc/cloudflared-config/config.yml run
     depends_on:
       homeserver:
         condition: service_started
 
-  # Locally-managed counterpart for the dashboard's "Connect Cloudflare
-  # account" flow, which writes credentials.json + config.yml instead of a
-  # token. The official image is distroless (no shell), so mode selection is
-  # expressed as two services: this one errors-and-retries until config.yml
-  # exists, while the token-mode service above errors-and-retries until the
-  # token file is non-empty. At most one of them runs; the other restarts
-  # quietly with docker's capped backoff. Whichever setup method the user
-  # completes, its container picks the files up within seconds.
   # Preview mode: an account-less Quick Tunnel whose random URL is published
   # as the homeserver's domain (testdrive.env gates it - absent file means
-  # TUNNEL_URL is unset and the bare command exits, giving the same
-  # crash-loop gating as the other two cloudflared modes). No depends_on:
-  # it must be getting its URL while the config wrapper waits to publish it,
-  # which is before the homeserver starts. The logfile is how the wrapper
-  # (and the dashboard) learn the URL.
+  # TUNNEL_URL is unset and the bare command exits, giving the same crash-loop
+  # gating as the persistent service above). No depends_on: it must be getting
+  # its URL while the config wrapper waits to publish it, which is before the
+  # homeserver starts. The logfile is how the wrapper (and the dashboard)
+  # learn the URL. Kept as its own service because it serves a different
+  # command (--url quick tunnel, no account) and is deliberately scoped to
+  # only the preview/ subdir, never the credentials.
   cloudflared-preview:
     image: cloudflare/cloudflared:2026.5.2@sha256:12ff5c6992a9863db4da270746af7c244bcaee49353039af8104268a18d6c4f0
     restart: on-failure
@@ -194,14 +190,3 @@ services:
       # same as when testdrive.env is absent.
       - ${APP_DATA_DIR}/cloudflare/preview:/etc/cloudflared-config/preview
     command: tunnel --no-autoupdate --logfile /etc/cloudflared-config/preview/quick.log
-
-  cloudflared-local:
-    image: cloudflare/cloudflared:2026.5.2@sha256:12ff5c6992a9863db4da270746af7c244bcaee49353039af8104268a18d6c4f0
-    restart: on-failure
-    stop_grace_period: 1m
-    volumes:
-      - ${APP_DATA_DIR}/cloudflare:/etc/cloudflared-config:ro
-    command: tunnel --no-autoupdate --config /etc/cloudflared-config/config.yml run
-    depends_on:
-      homeserver:
-        condition: service_started
