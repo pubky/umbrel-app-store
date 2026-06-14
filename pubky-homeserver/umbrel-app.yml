@@ -2,7 +2,7 @@ manifestVersion: 1
 id: pubky-homeserver
 category: utilities
 name: Pubky Homeserver
-version: "0.9.1-12"
+version: "0.9.1-13"
 tagline: Decentralized homeserver with admin dashboard
 icon: https://raw.githubusercontent.com/pubky/umbrel-apps-gallery/master/pubky-homeserver/icon.svg
 gallery:
@@ -52,7 +52,25 @@ description: >-
   Four ways, from Settings (gear icon), Cloudflare tab: connect your Cloudflare account with one click (recommended), set up with an API token, try Preview mode for a temporary public address with no account or domain at all, or follow the full manual guide. The Overview shows live whether your address is reachable.
 
 releaseNotes: >-
-  Version 0.9.1-12:
+  Version 0.9.1-13:
+
+
+  A Preview-mode indicator, a small Overview polish, and more robust Cloudflare setup (dashboard v0.1.21).
+
+
+  - When your public address is a temporary Cloudflare Preview tunnel (a trycloudflare.com address), the Overview now marks it "Preview mode" and explains the limits on hover: brief outages when the app restarts, and the live /events stream does not work through it, so Pubky indexers may miss your content. Use a permanent domain (a free Cloudflare account, ideally with your own domain) for full support.
+
+
+  - The "All set" card on the get-started checklist can now be expanded to review the steps that were verified.
+
+
+  - Fixed a rare race in the Cloudflare setup lock where two setup actions starting at the same moment could both run. Setup is now correctly serialized.
+
+
+  - Under the hood, the dashboard can also run outside Umbrel now (standalone), with the Umbrel-only Cloudflare flows hidden in that mode. No change to the Umbrel experience.
+
+
+  Plus 0.9.1-12:
 
 
   Simpler Cloudflare tunnel setup under the hood (dashboard v0.1.20).
