@@ -129,6 +129,10 @@ services:
       # admin_password in config.toml would disconnect the dashboard. This
       # flag makes the config editor reject such edits with an explanation.
       ADMIN_PASSWORD_MANAGED: "true"
+      # Marks this as the Umbrel deployment: the dashboard shows the Cloudflare
+      # setup tab/flows, umbrelOS backup guidance, and "restart from Umbrel"
+      # copy. Unset (standalone) hides Cloudflare setup and uses generic copy.
+      PLATFORM: umbrel
       PORT: 8812
       HOSTNAME: "0.0.0.0"
       # Path to the homeserver log file (written by the FIFO+tee in the
