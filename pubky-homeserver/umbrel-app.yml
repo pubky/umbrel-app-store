@@ -2,7 +2,7 @@ manifestVersion: 1
 id: pubky-homeserver
 category: utilities
 name: Pubky Homeserver
-version: "0.9.1-14"
+version: "0.9.1-15"
 tagline: Decentralized homeserver with admin dashboard
 icon: https://raw.githubusercontent.com/pubky/umbrel-apps-gallery/master/pubky-homeserver/icon.svg
 gallery:
@@ -52,7 +52,19 @@ description: >-
   Four ways, from Settings (gear icon), Cloudflare tab: connect your Cloudflare account with one click (recommended), set up with an API token, try Preview mode for a temporary public address with no account or domain at all, or follow the full manual guide. The Overview shows live whether your address is reachable.
 
 releaseNotes: >-
-  Version 0.9.1-14:
+  Version 0.9.1-15:
+
+
+  Small Cloudflare fixes and polish (dashboard v0.1.24).
+
+
+  - Fixed a display glitch where a long "Not reachable" reason in the Cloudflare Status row (for example the tunnel-not-connected/restart hint) was crammed onto one line and made the Settings dialog scroll sideways. The reason now wraps neatly on its own line.
+
+
+  - Updated the in-app Cloudflare Tunnel guide to match Cloudflare's current dashboard: the button is now "Add a tunnel", the Route-traffic step points at the "Published applications" tab, and the connector note refers to the "No connectors installed" message you actually see while setting up.
+
+
+  Plus 0.9.1-14:
 
 
   Clearer Cloudflare setup, and a tap-to-learn Preview badge (dashboard v0.1.23).
