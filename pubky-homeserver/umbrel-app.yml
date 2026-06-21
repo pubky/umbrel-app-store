@@ -2,7 +2,7 @@ manifestVersion: 1
 id: pubky-homeserver
 category: utilities
 name: Pubky Homeserver
-version: "0.9.1-16"
+version: "0.9.1-17"
 tagline: Decentralized homeserver with admin dashboard
 icon: https://raw.githubusercontent.com/pubky/umbrel-apps-gallery/master/pubky-homeserver/icon.svg
 gallery:
@@ -43,7 +43,7 @@ description: >-
   - RESTful API. Any service can access data through a standard RESTful API.
 
 
-  - Server monitoring. The dashboard shows server status, whether your public address is reachable, and an API explorer.
+  - Server monitoring. The dashboard shows server status and whether your public address is reachable.
 
 
   Public access without port forwarding:
@@ -52,7 +52,22 @@ description: >-
   Four ways, from Settings (gear icon), Cloudflare tab: connect your Cloudflare account with one click (recommended), set up with an API token, try Preview mode for a temporary public address with no account or domain at all, or follow the full manual guide. The Overview shows live whether your address is reachable.
 
 releaseNotes: >-
-  Version 0.9.1-16:
+  Version 0.9.1-17:
+
+
+  Beta-feedback polish: a working public-address link, no more default-password popup, and a cleaner UI (dashboard v0.1.26).
+
+
+  - No more "default password" popup on open. Umbrel was showing a credentials modal for a password you never actually type - the dashboard logs you in through Umbrel and uses the homeserver admin password behind the scenes. It's gone now. (You can still reveal that password in Settings, eye icon, if another tool like pubky-cli needs it.)
+
+
+  - The public address now opens when you click or paste it. Previously the address was shown with its port (e.g. yourname.trycloudflare.com:443), and pasting that into a browser failed. It's now a proper clickable https link, and the copy button gives you a URL that just works.
+
+
+  - Removed the developer-only "API" explorer tab from the normal interface to reduce clutter.
+
+
+  Plus 0.9.1-16:
 
 
   Fixes a misleading restart prompt on fresh installs (dashboard v0.1.25).
