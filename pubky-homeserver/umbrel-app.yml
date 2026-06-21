@@ -209,10 +209,15 @@ support: https://github.com/pubky/umbrel-app-store/issues
 port: 8812
 path: ""
 defaultUsername: ""
-# Umbrel derives this app's APP_PASSWORD deterministically; this flag makes
-# the native credentials UI show it as the app's password (no defaultPassword
-# line, umbreld fills it in - same pattern as pi-hole and code-server upstream).
-deterministicPassword: true
+# No default-credentials modal: the dashboard logs in via Umbrel's own auth, and
+# the homeserver admin password (Umbrel's APP_PASSWORD, used server-side as
+# ADMIN_TOKEN) is never typed by the user - so showing it on open only confused
+# people. APP_PASSWORD is provided regardless of this field (proven by 0.9.1-1,
+# which shipped this exact setup - ADMIN_TOKEN/POSTGRES_PASSWORD = ${APP_PASSWORD}
+# with no deterministicPassword - and worked), so an empty defaultPassword
+# suppresses the modal without breaking the admin connection. The password is
+# still available in Settings (eye icon) for tools like pubky-cli.
+defaultPassword: ""
 # umbrelOS 1.5+ built-in backups include app-data by default; exclude only the high-churn log file.
 backupIgnore:
   - homeserver/homeserver.log
