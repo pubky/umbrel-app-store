@@ -2,7 +2,7 @@ manifestVersion: 1
 id: pubky-homeserver
 category: utilities
 name: Pubky Homeserver
-version: "0.9.1-17"
+version: "0.9.1-18"
 tagline: Decentralized homeserver with admin dashboard
 icon: https://raw.githubusercontent.com/pubky/umbrel-apps-gallery/master/pubky-homeserver/icon.svg
 gallery:
@@ -52,7 +52,19 @@ description: >-
   Four ways, from Settings (gear icon), Cloudflare tab: connect your Cloudflare account with one click (recommended), set up with an API token, try Preview mode for a temporary public address with no account or domain at all, or follow the full manual guide. The Overview shows live whether your address is reachable.
 
 releaseNotes: >-
-  Version 0.9.1-17:
+  Version 0.9.1-18:
+
+
+  Invite QR fix and a live signup confirmation (dashboard v0.1.27).
+
+
+  - The invite QR now uses the direct signup link that Pubky Ring expects. Scanning the old QR did create the account, but Ring then tried to deliver an authorization for an app that was never part of an invite, and finished with an error. This needs a Pubky Ring build with direct signup support. If your Ring is older, copy the invite code and type it into Ring by hand instead of scanning.
+
+
+  - The invites screen now tells you when somebody joins while the QR is on screen. The signup counters refresh on their own and a confirmation appears, so you no longer have to reload the page to find out whether the code was used.
+
+
+  Plus 0.9.1-17:
 
 
   Beta-feedback polish: a working public-address link, no more default-password popup, and a cleaner UI (dashboard v0.1.26).

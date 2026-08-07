@@ -104,7 +104,7 @@ services:
       start_period: 120s
 
   web:
-    image: synonymsoft/homeserver-dashboard:v0.1.26@sha256:c21a5ee3977eade8db9209a3a5d85d8bc13bd4f2d6de742d5157857d1925f352
+    image: synonymsoft/homeserver-dashboard:v0.1.27@sha256:e2e7d9707768b0bf31ee31d40518826c8770cabccd7016806d0e8eba2e264826
     restart: on-failure
     stop_grace_period: 1m
     # Start the container as root instead of the image's baked-in `nextjs`
