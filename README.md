@@ -31,11 +31,11 @@ History note: releases up to `0.2.9` used an independent app semver; the scheme 
 
 ## Related projects
 
-- [`pubky/pubky-core`](https://github.com/pubky/pubky-homeserver) - the Rust homeserver this app runs.
+- [`pubky/pubky-homeserver`](https://github.com/pubky/pubky-homeserver) - the Rust homeserver this app runs.
 - [`pubky/homeserver-dashboard`](https://github.com/pubky/homeserver-dashboard) - the Next.js admin dashboard the app ships with.
 - [`pubky/umbrel-apps`](https://github.com/pubky/umbrel-apps) - our fork of the official Umbrel app store used to open the eventual upstream PR.
 - [`pubky/umbrel-apps-gallery`](https://github.com/pubky/umbrel-apps-gallery) - fork of the official gallery repo. Hosts `pubky-homeserver/icon.svg` + screenshots; this store's `umbrel-app.yml` points at those raw URLs.
 
 ## Reporting issues
 
-Issues with the app packaging (docker-compose, manifest, install flow) go in this repo; the manifest's `support:` link points here too. Issues with the homeserver itself belong in [`pubky/pubky-core`](https://github.com/pubky/pubky-homeserver/issues); dashboard issues in [`pubky/homeserver-dashboard`](https://github.com/pubky/homeserver-dashboard/issues).
+Issues with the app packaging (docker-compose, manifest, install flow) go in this repo; the manifest's `support:` link points here too. Issues with the homeserver itself belong in [`pubky/pubky-homeserver`](https://github.com/pubky/pubky-homeserver/issues); dashboard issues in [`pubky/homeserver-dashboard`](https://github.com/pubky/homeserver-dashboard/issues).
