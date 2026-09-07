@@ -231,7 +231,7 @@ releaseNotes: >-
 developer: Synonym Software, S.A. DE C.V.
 website: https://pubky.org/
 dependencies: []
-repo: https://github.com/pubky/pubky-core/
+repo: https://github.com/pubky/pubky-homeserver/
 support: https://github.com/pubky/umbrel-app-store/issues
 port: 8812
 path: ""

@@ -32,5 +32,5 @@ The Overview shows live whether your published domain is reachable, with a Fix i
 ## Reporting issues
 
 - App packaging (this repo): https://github.com/pubky/umbrel-app-store/issues
-- Homeserver: https://github.com/pubky/pubky-core/issues
+- Homeserver: https://github.com/pubky/pubky-homeserver/issues
 - Dashboard: https://github.com/pubky/homeserver-dashboard/issues
