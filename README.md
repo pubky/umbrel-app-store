@@ -10,7 +10,7 @@ See [`INSTALL.md`](./INSTALL.md) for the step-by-step guide (add the community s
 
 ## What's inside
 
-- [`pubky-homeserver/`](./pubky-homeserver) - the Pubky Homeserver app: manifest, docker-compose, and export hooks. The compose file runs the homeserver itself, a PostgreSQL database, an admin dashboard (`web`), a one-shot config wrapper that renders `config.toml` at startup, and three mode-gated `cloudflared` services (token, locally-managed account, and account-less Preview) of which at most one is active.
+- [`pubky-homeserver/`](./pubky-homeserver) - the Pubky Homeserver app: manifest, docker-compose, and export hooks. The compose file runs the homeserver itself, a PostgreSQL database, an admin dashboard (`web`), a one-shot config wrapper that renders `config.toml` at startup, and two file-gated `cloudflared` services (the persistent tunnel and account-less Preview) of which at most one is active.
 - [`umbrel-app-store.yml`](./umbrel-app-store.yml) - store metadata (`id: pubky`, `name: Pubky`). Umbrel reads this when you add the store.
 
 ## Versioning

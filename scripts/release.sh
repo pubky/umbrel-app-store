@@ -21,6 +21,9 @@
 #                              docker manifest inspect / skopeo) and the
 #                              pinned ref written to docker-compose.yml.
 #   --wrapper-image <ref>      Same, for `homeserver-config-wrapper`.
+#   --homeserver-image <ref>   Same, for `homeserver`. The X.Y.Z of
+#                              <app-version> must be this image's
+#                              homeserver version.
 #   --notes-file <path>        Plain-text release notes (paragraphs
 #                              separated by blank lines). Prepended as the
 #                              new top section of releaseNotes in
@@ -67,7 +70,7 @@ die() { echo "ERROR: $*" >&2; exit 1; }
 step() { printf '\n==> %s\n' "$*"; }
 
 usage() {
-  sed -n '2,40p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+  sed -n '2,43p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
   exit 1
 }
 
@@ -78,6 +81,7 @@ NEW_VERSION="$1"; shift
 
 DASHBOARD_IMAGE=""
 WRAPPER_IMAGE=""
+HOMESERVER_IMAGE=""
 NOTES_FILE=""
 ALLOW_BRANCH=0
 DO_PUSH=0
@@ -86,6 +90,7 @@ while [ $# -gt 0 ]; do
   case "$1" in
     --dashboard-image) [ $# -ge 2 ] || die "--dashboard-image needs a value"; DASHBOARD_IMAGE="$2"; shift 2 ;;
     --wrapper-image)   [ $# -ge 2 ] || die "--wrapper-image needs a value";   WRAPPER_IMAGE="$2";   shift 2 ;;
+    --homeserver-image) [ $# -ge 2 ] || die "--homeserver-image needs a value"; HOMESERVER_IMAGE="$2"; shift 2 ;;
     --notes-file)      [ $# -ge 2 ] || die "--notes-file needs a value";      NOTES_FILE="$2";      shift 2 ;;
     --allow-branch)    ALLOW_BRANCH=1; shift ;;
     --push)            DO_PUSH=1; shift ;;
@@ -208,6 +213,10 @@ fi
 if [ -n "$WRAPPER_IMAGE" ]; then
   step "Updating wrapper image"
   update_image "synonymsoft/homeserver-umbrel-config-wrapper" "$WRAPPER_IMAGE"
+fi
+if [ -n "$HOMESERVER_IMAGE" ]; then
+  step "Updating homeserver image"
+  update_image "synonymsoft/homeserver" "$HOMESERVER_IMAGE"
 fi
 
 # ------------------------------------------- step 4: release notes (optional)

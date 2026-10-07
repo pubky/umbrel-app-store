@@ -9,13 +9,13 @@ validation step did not stop the push, shipping a manifest still labeled
 
 ```
 scripts/release.sh <app-version> [--dashboard-image <ref>] [--wrapper-image <ref>] \
-    [--notes-file <path>] [--allow-branch] [--push]
+    [--homeserver-image <ref>] [--notes-file <path>] [--allow-branch] [--push]
 ```
 
 - `<app-version>` must match `X.Y.Z-N` (homeserver version + packaging
   suffix, see the repo README's "Versioning" section) and be strictly newer
   than the current manifest version.
-- `--dashboard-image` / `--wrapper-image` update the corresponding `image:`
+- `--dashboard-image` / `--wrapper-image` / `--homeserver-image` update the corresponding `image:`
   line in `docker-compose.yml`. Refs without an `@sha256:` digest are
   resolved automatically (docker buildx imagetools, docker manifest
   inspect, skopeo); if resolution fails, pass `<ref>@sha256:<digest>`
