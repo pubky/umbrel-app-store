@@ -48,7 +48,7 @@ services:
       - ${APP_DATA_DIR}/cloudflare:/etc/pubky-cloudflare
 
   homeserver:
-    image: synonymsoft/homeserver:f90548c7531ebdf83f14dbe209eb5d9401c27244@sha256:62fc80c453fe541ade43e7f6a72cb29c0bf5833487915a49f2417c304cb37e86
+    image: synonymsoft/homeserver:v0.15.0@sha256:a6fe11ee3125332ead6dc030a1f914ba12d2a6f28b0d266cf058e4f0cb76f5ca
     restart: on-failure
     stop_grace_period: 1m
     # Tee stdout+stderr of the homeserver into /data/homeserver.log while
