@@ -129,6 +129,9 @@ services:
       # admin_password in config.toml would disconnect the dashboard. This
       # flag makes the config editor reject such edits with an explanation.
       ADMIN_PASSWORD_MANAGED: "true"
+      # Turns on the dashboard login. Other apps' containers can reach this
+      # port without going through the Umbrel login.
+      DASHBOARD_PASSWORD: ${APP_PASSWORD}
       # Marks this as the Umbrel deployment: the dashboard shows the Cloudflare
       # setup tab/flows, umbrelOS backup guidance, and "restart from Umbrel"
       # copy. Unset (standalone) hides Cloudflare setup and uses generic copy.
