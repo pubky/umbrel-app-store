@@ -2,7 +2,7 @@ manifestVersion: 1
 id: pubky-homeserver
 category: utilities
 name: Pubky Homeserver
-version: "0.16.0-1"
+version: "0.16.1-1"
 tagline: Decentralized homeserver with admin dashboard
 icon: https://raw.githubusercontent.com/pubky/umbrel-apps-gallery/master/pubky-homeserver/icon.svg
 gallery:
@@ -52,7 +52,22 @@ description: >-
   Four ways, from Settings (gear icon), Cloudflare tab: connect your Cloudflare account with one click (recommended), set up with an API token, try Preview mode for a temporary public address with no account or domain at all, or follow the full manual guide. The Overview shows live whether your address is reachable.
 
 releaseNotes: >-
-  Version 0.16.0-1:
+  Version 0.16.1-1:
+
+
+  Homeserver updated to v0.16.1 (from v0.16.0). Your users, files and settings carry over.
+
+
+  The dashboard now asks for a password. Umbrel shows it when you open the app, and you can see it again in the app's Settings under Default credentials. Before, other apps on the same Umbrel could reach the dashboard without any login.
+
+
+  Important: this is the last update from the Pubky community store. Pubky Homeserver is moving to the official Umbrel App Store, which stores data differently and cannot read this install's users, files or homeserver key.
+
+
+  If Umbrel later offers another Pubky Homeserver update, do not install it on top of this one. To switch, uninstall this app first, then install the official one.
+
+
+  Plus 0.16.0-1:
 
 
   Homeserver updated to v0.16.0 (from v0.15.0).
