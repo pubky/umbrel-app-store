@@ -2,7 +2,7 @@ manifestVersion: 1
 id: pubky-homeserver
 category: utilities
 name: Pubky Homeserver
-version: "0.16.1-1"
+version: "0.16.1-2"
 tagline: Decentralized homeserver with admin dashboard
 icon: https://raw.githubusercontent.com/pubky/umbrel-apps-gallery/master/pubky-homeserver/icon.svg
 gallery:
@@ -52,7 +52,19 @@ description: >-
   Four ways, from Settings (gear icon), Cloudflare tab: connect your Cloudflare account with one click (recommended), set up with an API token, try Preview mode for a temporary public address with no account or domain at all, or follow the full manual guide. The Overview shows live whether your address is reachable.
 
 releaseNotes: >-
-  Version 0.16.1-1:
+  Version 0.16.1-2:
+
+
+  Security update, safe to install on top of 0.16.1-1. Your users, files and settings carry over.
+
+
+  The Cloudflare Tunnel connector moves to 2026.10.3, which stops trusting eight eMudhra certificates whose keys turned out to be weak. The dashboard now runs on Node.js 24.22.1, the October security release.
+
+
+  This update still comes from the Pubky community store. The warning below is about the official Umbrel App Store version: to switch to that one, uninstall this app first.
+
+
+  Plus 0.16.1-1:
 
 
   Homeserver updated to v0.16.1 (from v0.16.0). Your users, files and settings carry over.
